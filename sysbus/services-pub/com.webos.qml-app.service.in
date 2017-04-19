@@ -1,4 +1,0 @@
-[D-BUS Service]
-Name=com.webos.qml-app
-Exec=$$WEBOS_INSTALL_BINS/qml-runner
-Type=static

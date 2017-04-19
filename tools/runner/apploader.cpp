@@ -67,6 +67,21 @@ void AppLoader::reloadApplication(const QVariant &params)
     }
 
     m_engine.rootContext()->setContextProperty("params", params);
+
+    // NOTE
+    // Logically, the compositor determines client's wl_webos_shell@state, and the client follows it.
+    // But what the client calls QWindow::showFullScreen() is out of the compositor's logic.
+    // We should use QWindow::show() instead of QWindow::showFullScreen(), but there are some problem.
+    // 1. qml-runner doesn't react a 'background' (including 'keepAlive')  application required to call QWindow::hide().
+    // 2. qml-runner doesn't support 'relaunch' lifecycle.
+    //    - If CARD TYPE WINDOW goes to background,
+    //      client's window state goes to 'Minimized' state without a 'surfaceUnmapped' event.
+    //    - In this situation, if the client goes to 'relaunch',
+    //      the client only calling QWindow::show() never lead to a 'surfaceMapped' event.
+    //    - In conclusion,
+    //      client's window should call QWindow::hide() at the 'background', and
+    //      client's window should call QWindow::show() at the 'relaunch'.
+    // Because of this problem, we are going to keep using QWindow::showFullScreen() at here.
     m_window->showFullScreen();
 }
 

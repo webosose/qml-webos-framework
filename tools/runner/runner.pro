@@ -26,14 +26,15 @@ include(../../src/common/common.pri)
 CONFIG += webos webos-service
 WEBOS_SYSBUS_DIR = $$PWD/../../sysbus
 
-SOURCES += main.cpp apploader.cpp ipcclient.cpp
-HEADERS += apploader.h ipcclient.h
+SOURCES += main.cpp apploader.cpp ipcclient.cpp lunaservicewrapper.cpp applifecyclemanager.cpp
+HEADERS += apploader.h ipcclient.h lunaservicewrapper.h applifecyclemanager.h
 
 
 qml-profiler {
     DEFINES += QMLJSDEBUGGER
 }
 
+PKGCONFIG += glib-2.0 luna-service2
 !no_webos_platform {
     CONFIG += link_pkgconfig
     PKGCONFIG += PmLogLib

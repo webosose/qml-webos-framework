@@ -26,6 +26,7 @@
 
 #include "ipcclient.h"
 #include "apploader.h"
+#include "applifecyclemanager.h"
 
 #ifdef QMLJSDEBUGGER
 #include <QtQml/qqmldebug.h>
@@ -133,6 +134,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
     QString mainQml("");
     QString appId("");
+    QString methodName("");
     QVariant params;
 
     bool interactive = false;
@@ -150,6 +152,9 @@ int main(int argc, char *argv[])
             }
             if (obj.contains("params")) {
                 params = obj.value("params").toVariant();
+            }
+            if (obj.contains("interfaceMethod")) {
+                methodName = obj.value("interfaceMethod").toString();
             }
         }
         if (arg == "--main" && (i + 1 < allArgs.size())) {
@@ -179,14 +184,37 @@ int main(int argc, char *argv[])
 #endif
     }
 
-    qDebug("instantiated QGuiApplication");
+    if (methodName.isEmpty()) {
+        // Refer to http://collab.lge.com/main/display/TVSWPF/Native+app+life+cycle+interface.
+        // SAM doesn't send the "interfaceMethod" key if an application is running under
+        // nativeLifeCycleInterfaceVersion=1. So, here is to set default lifecycle interface (registerNativeApp).
+        // As you know, SAM provides registerApp as nativeLifeCycleInterfaceVersion=2.
+        methodName = AppLifeCycleManager::defaultInterfaceMethodName;
+    }
+
+    qDebug("instantiated QGuiApplication, methodName = %s", methodName.toUtf8().data());
 
     AppLoader loader;
     qDebug("instantiated QQmlEngine and AppLoader");
 
     QPointer<IpcClient> client;
+    AppLifeCycleManager* appLifeCycleManager = NULL;
 
     if (!interactive) {
+        appLifeCycleManager = new AppLifeCycleManager(appId, methodName, "");
+        Q_ASSERT(appLifeCycleManager);
+
+        // relaunching case
+        QObject::connect(appLifeCycleManager, &AppLifeCycleManager::relaunchRequest,
+                         [&loader, client] (const QJsonDocument &params) {
+            if (loader.ready()) {
+                loader.reloadApplication(params.toVariant());
+            } else {
+                qWarning() << "loader isn't ready to reload";
+                QCoreApplication::exit(-1);
+            }
+        });
+
         if (!loader.loadApplication(appId, mainQml, params)) {
             return -1;
         }
@@ -254,6 +282,10 @@ int main(int argc, char *argv[])
 
     if (!client.isNull())
         delete client.data();
+    if (!appLifeCycleManager) {
+        delete appLifeCycleManager;
+        appLifeCycleManager = NULL;
+    }
 
     qDebug("pid '%lld' return from exec with '%d'", QCoreApplication::applicationPid(), ret);
     return ret;
