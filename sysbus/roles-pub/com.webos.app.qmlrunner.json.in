@@ -2,12 +2,16 @@
     \"role\": {
         \"exeName\": \"$$WEBOS_INSTALL_BINS/qml-runner\",
         \"type\": \"privileged\",
-        \"allowedNames\": [\"com.webos.app.qmlrunner-*\"]
+        \"allowedNames\": [\"com.webos.app.qmlrunner-*\", \"com.webos.media.client.*\"]
     },
     \"permissions\": [
         {
             \"service\": \"com.webos.app.qmlrunner-*\",
             \"outbound\": [\"com.webos.applicationManager\"]
+        }, {
+            \"service\":\"com.webos.media.client.*\",
+            \"inbound\":[\"com.webos.media\"],
+            \"outbound\":[\"com.webos.media\"]
         }
     ]
 }
