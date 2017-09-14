@@ -215,6 +215,19 @@ int main(int argc, char *argv[])
             }
         });
 
+        // close case
+        QObject::connect(appLifeCycleManager, &AppLifeCycleManager::closeRequest,
+                         [&loader, client] (const QJsonDocument &params) {
+            Q_UNUSED(params);
+
+            if (loader.ready()) {
+                loader.terminate();
+            } else {
+                qWarning() << "loader isn't ready to close";
+                QCoreApplication::exit(-1);
+            }
+        });
+
         if (!loader.loadApplication(appId, mainQml, params)) {
             return -1;
         }

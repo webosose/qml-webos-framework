@@ -38,6 +38,7 @@ public:
 
 signals:
     void relaunchRequest(const QJsonDocument &);
+    void closeRequest(const QJsonDocument &);
 
 private slots:
     void handleServerStatus(QString &contextId, QString &data, QString &method);

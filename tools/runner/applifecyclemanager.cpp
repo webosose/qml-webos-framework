@@ -121,4 +121,8 @@ void AppLifeCycleManager::handleAppLifeCycle(QString &contextId, QString &data, 
         const QJsonObject &parameters = response.value(QStringLiteral("parameters")).toObject();
         emit relaunchRequest(QJsonDocument(parameters));
     }
+    else if (message == "close") {
+        const QJsonObject &reason = response.value(QStringLiteral("reason")).toObject();
+        emit closeRequest(QJsonDocument(reason));
+    }
 }
