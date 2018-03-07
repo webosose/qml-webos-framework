@@ -1,0 +1,10 @@
+*.so
+build-*
+*.user
+*.o
+*.a
+moc_*
+qrc_*
+Makefile
+tools/runner/qml-runner
+*.swp

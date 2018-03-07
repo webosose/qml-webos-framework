@@ -1,0 +1,10 @@
+module Eos.Items
+plugin Items
+
+Parallelogram 0.1 Parallelogram.qml
+RoundedRectangle 0.1 RoundedRectangle.qml
+Ribbon 0.1 Ribbon.qml
+RibbonEditor 0.1 RibbonEditor.qml
+SmoothClipItem 0.1 SmoothClipItem.qml
+Wiper 0.1 Wiper.qml
+WiperStack 0.1 WiperStack.qml

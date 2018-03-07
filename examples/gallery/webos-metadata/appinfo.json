@@ -1,0 +1,16 @@
+{
+    "id": "eos.widgetgallery",
+    "version": "0.0.1",
+    "vendor": "LG Electronics",
+    "type": "qml",
+    "title": "Widget Gallery",
+    "icon": "icon_80.png",
+    "largeIcon": "icon_130.png",
+    "iconColor": "#f67723",
+    "main": "main.qml",
+    "handlesRelaunch": true,
+    "class": {
+        "hidden": false
+    },
+    "visible": true
+}

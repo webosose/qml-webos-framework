@@ -1,0 +1,14 @@
+{
+    "role": {
+        "exeName":"/usr/bin/boosterd",
+        "type": "privileged",
+        "allowedNames": ["com.webos.booster"]
+    },
+    "permissions": [
+        {
+            "service":"com.webos.booster",
+            "inbound":["*"],
+            "outbound":["*"]
+        }
+    ]
+}

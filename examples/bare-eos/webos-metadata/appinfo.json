@@ -1,0 +1,16 @@
+{
+  "id": "eos.bare",
+  "version": "0.0.1",
+  "vendor": "LG Electronics",
+  "type": "qml",
+  "main": "main.qml",
+  "title": "Bare Eos App",
+  "icon": "icon_80.png",
+  "largeIcon": "icon_130.png",
+  "miniicon": "icon_60.png",
+  "iconColor": "#ffd800",
+  "handlesRelaunch": true,
+  "class": { "hidden": false },
+  "portraitResize": {},
+  "visible": true
+}
