@@ -18,6 +18,7 @@
 #define PUNCHTHROUGH_H
 
 #include <QtQuick/QQuickItem>
+#include <qpa/qplatformnativeinterface.h>
 
 class PunchThrough : public QQuickItem
 {
@@ -26,7 +27,30 @@ class PunchThrough : public QQuickItem
 
 public:
     PunchThrough(QQuickItem *parent = 0);
+    ~PunchThrough();
+
+    //Q_PROPERTY(QRect region READ region)
+    Q_INVOKABLE void setRegion(const QRectF& region);
+
     QSGNode *updatePaintNode(QSGNode *node, UpdatePaintNodeData *);
+    void setWindowPunchThroughRect();
+
+public slots:
+    void handleDataChanged();
+
+    void setXValue();
+    void setYValue();
+    void setWidthValue();
+    void setHeightValue();
+
+private:
+    QPlatformNativeInterface *m_nativeInterface;
+    qreal m_x;
+    qreal m_y;
+    qreal m_width;
+    qreal m_height;
+    QRectF m_region;
+    bool m_changed;
 };
 
 #endif // PUNCHTHROUGH_H

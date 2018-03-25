@@ -17,21 +17,119 @@
 #include "punchthrough.h"
 
 #include <QtQuick/QSGSimpleRectNode>
+#include <QGuiApplication>
+#include <QScreen>
+
+static QHash<void *, QRectF> punchThroughRects;
+static bool (*setWindowPunchThroughRectFunc)(QScreen *, const QHash<void*, QRectF> &);
 
 PunchThrough::PunchThrough(QQuickItem *parent):
-    QQuickItem(parent)
+    QQuickItem(parent),
+    m_nativeInterface(QGuiApplication::platformNativeInterface()),
+    m_x(0),
+    m_y(0),
+    m_width(0),
+    m_height(0)
 {
     setFlags(ItemHasContents);
+
+    connect(static_cast<QQuickItem *>(this), SIGNAL(xChanged()), this, SLOT(setXValue()));
+    connect(static_cast<QQuickItem *>(this), SIGNAL(yChanged()), this, SLOT(setYValue()));
+    connect(static_cast<QQuickItem *>(this), SIGNAL(widthChanged()), this, SLOT(setWidthValue()));
+    connect(static_cast<QQuickItem *>(this), SIGNAL(heightChanged()), this, SLOT(setHeightValue()));
+
+    setWindowPunchThroughRectFunc = (bool (*)(QScreen*, const QHash<void*, QRectF> &)) m_nativeInterface->nativeResourceForScreen("setWindowPunchThroughRectFunc", QGuiApplication::primaryScreen());
+}
+
+PunchThrough::~PunchThrough() {
+    punchThroughRects.remove(this);
+    setWindowPunchThroughRect();
 }
 
 QSGNode *PunchThrough::updatePaintNode(QSGNode *node, UpdatePaintNodeData *)
 {
     QSGSimpleRectNode *rectNode = static_cast<QSGSimpleRectNode *>(node);
+
     if (rectNode) {
         rectNode->setRect(boundingRect());
     } else {
         rectNode = new QSGSimpleRectNode(boundingRect(), Qt::transparent);
         rectNode->material()->setFlag(QSGMaterial::Blending, false);
     }
+
+    if (punchThroughRects[this].isNull()) {
+        QRectF rect(m_x, m_y, m_width,  m_height);
+        punchThroughRects[this] = rect;
+
+        setWindowPunchThroughRect();
+
+    }
+
     return rectNode;
+}
+
+void PunchThrough::setRegion(const QRectF& region)
+{
+    int changed = false;
+
+    if (region.x() != x()) {
+        setX(region.x());
+        changed = true;
+    }
+
+    if (region.y() != y()) {
+        setY(region.y());
+        changed = true;
+    }
+
+    if (region.width() != width()) {
+        setWidth(region.width());
+        changed = true;
+    }
+
+    if (region.height() != height()) {
+        setHeight(region.height());
+        changed = true;
+    }
+
+    if(changed) {
+        QRectF changedRegion(m_x, m_y, m_width,  m_height);
+        punchThroughRects[this] = changedRegion;
+        qWarning() << "punchThrough ( " << this << ") is changed as " << changedRegion;
+        setWindowPunchThroughRect();
+    }
+}
+
+void PunchThrough::setXValue()
+{
+   m_x = x();
+   qDebug() << "x (" << this << "): " << m_x;
+}
+
+void PunchThrough::setYValue()
+{
+    m_y = y();
+    qDebug() << "y (" << this << "): " << m_y;
+}
+
+void PunchThrough::setWidthValue()
+{
+    m_width = width();
+    qDebug() << "width (" << this << "): " << m_width;
+}
+
+void PunchThrough::setHeightValue()
+{
+    m_height = height();
+    qDebug() << "height (" << this << "): " << m_height;
+}
+
+void PunchThrough::setWindowPunchThroughRect()
+{
+    if (setWindowPunchThroughRectFunc) {
+        qWarning() << "punchThroughRects: " << punchThroughRects;
+        setWindowPunchThroughRectFunc(QGuiApplication::primaryScreen(), punchThroughRects);
+    } else {
+        qWarning() << "setWindowPunchThroughRectFunc is not defined";
+    }
 }
