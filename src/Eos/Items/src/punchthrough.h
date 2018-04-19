@@ -50,7 +50,6 @@ private:
     qreal m_width;
     qreal m_height;
     QRectF m_region;
-    bool m_changed;
 };
 
 #endif // PUNCHTHROUGH_H
