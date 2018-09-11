@@ -18,7 +18,7 @@ TEMPLATE = lib
 CONFIG += staticlib c++11
 TARGET = webosqmlframeworkcommon
 
-QT += qml quick gui-private
+QT += qml quick gui-private quick-private
 
 no_webos_platform {
     DEFINES += NO_WEBOS_PLATFORM

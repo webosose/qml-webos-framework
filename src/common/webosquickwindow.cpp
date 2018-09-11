@@ -25,6 +25,8 @@
 #include <webosshell.h>
 #endif
 
+#include "QtQuick/private/qquickitem_p.h"
+
 WebOSQuickWindow::WebOSQuickWindow(QWindow *parent)
     : QQuickWindow (parent)
     , m_windowProperties (this)
@@ -387,4 +389,54 @@ void WebOSQuickWindow::resetAddon()
 #else
     Q_UNUSED(addon);
 #endif
+}
+
+bool WebOSQuickWindow::event(QEvent *ev)
+{
+    switch (ev->type()) {
+    case QEvent::TabletMove:
+    case QEvent::TabletPress:
+    case QEvent::TabletRelease:
+        handleTabletEvent(QQuickWindowPrivate::get(this)->contentItem, static_cast<QTabletEvent *>(ev));
+        return true;
+    }
+
+    return QQuickWindow::event(ev);
+}
+
+bool WebOSQuickWindow::handleTabletEvent(QQuickItem* item, QTabletEvent* event)
+{
+    //The Algorithm finds top-most item that can handle tablet event.
+    //Main idea is borrowed from QQuickWindowPrivate::deliverHoverEvent().
+    QQuickItemPrivate *itemPrivate = QQuickItemPrivate::get(item);
+
+    if (itemPrivate->flags & QQuickItem::ItemClipsChildrenToShape) {
+        QPointF p = item->mapFromScene(event->posF());
+        if (!item->contains(p))
+            return false;
+    }
+
+    QList<QQuickItem *> children = itemPrivate->paintOrderChildItems();
+    for (int ii = children.count() - 1; ii >= 0; --ii) {
+        QQuickItem *child = children.at(ii);
+        if (!child->isVisible() || !child->isEnabled() || QQuickItemPrivate::get(child)->culled)
+            continue;
+        if (handleTabletEvent(child, event))
+            return true;
+    }
+
+    QPointF p = item->mapFromScene(event->posF());
+
+    if (item->contains(p)) {
+        QTabletEvent ev(event->type(), p, p, event->device(), event->pointerType(),
+                        event->pressure(), event->xTilt(), event->yTilt(), event->tangentialPressure(),
+                        event->rotation(), event->z(), event->modifiers(), event->uniqueId(), event->button(), event->buttons());
+        ev.accept();
+        if (QCoreApplication::sendEvent(item, &ev)) {
+            event->accept();
+            return true;
+        }
+    }
+
+    return false;
 }

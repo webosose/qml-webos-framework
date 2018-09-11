@@ -193,6 +193,7 @@ Q_SIGNALS:
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
     void mouseMoveEvent(QMouseEvent *ev);
+    bool event(QEvent *ev);
 
 private:
     QQmlPropertyMap m_windowProperties;
@@ -215,6 +216,7 @@ private:
     QPoint m_mousePosition;
 
     bool m_keepAlive;
+    bool handleTabletEvent(QQuickItem* item, QTabletEvent* event);
 
 private slots:
     void updatePendingWindowProperties();
