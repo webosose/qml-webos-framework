@@ -1,0 +1,2 @@
+module Eos.VirtualKeyboardOverlay
+plugin eosvirtualkeyboardoverlay

@@ -1,4 +1,4 @@
-# Copyright (c) 2012-2018 LG Electronics, Inc.
+# Copyright (c) 2018 LG Electronics, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,11 +14,17 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-TEMPLATE = subdirs
+TEMPLATE = aux
+!load(webos-variables):error("Cannot load webos-variables.prf")
 
-MOC_DIR = .moc
-OBJECTS_DIR = .obj
+# for qtcreator cross-referencing qml types
+OTHER_FILES += $$files(*.qml)
+QML_IMPORT_PATH += ../../src
 
-CONFIG += qt debug
+# install
+defined(WEBOS_INSTALL_WEBOS_APPLICATIONSDIR, var) {
+    base.path = $$WEBOS_INSTALL_WEBOS_APPLICATIONSDIR/eos.vkb-overlay
+    base.files = $$files(webos-metadata/*) $$files(*.qml)
 
-SUBDIRS = gallery bare-eos overlay-window vkb-overlay
+    INSTALLS += base
+}

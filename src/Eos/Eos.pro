@@ -23,5 +23,6 @@ SUBDIRS += \
     Window
 
 !no_webos_platform {
-    SUBDIRS += SurfaceGroup
+    SUBDIRS += SurfaceGroup \
+               VirtualKeyboardOverlay
 }
