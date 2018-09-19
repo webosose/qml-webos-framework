@@ -1,0 +1,15 @@
+{
+    "id": "com.webos.exampleapp.tabletevent",
+    "version": "1.0.0",
+    "vendor": "LG Electronics",
+    "type": "native",
+    "main": "file:///usr/palm/applications/com.webos.exampleapp.tabletevent/com.webos.exampleapp.tabletevent",
+    "title": "Tablet Event Example",
+    "icon": "icon_80.png",
+    "largeIcon": "icon_130.png",
+    "miniicon": "icon_60.png",
+    "iconColor": "#ff0000",
+    "class": { "hidden": false },
+    "portraitResize": {},
+    "visible": true
+}
