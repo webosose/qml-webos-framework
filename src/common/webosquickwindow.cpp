@@ -434,8 +434,29 @@ bool WebOSQuickWindow::handleTabletEvent(QQuickItem* item, QTabletEvent* event)
         ev.accept();
         if (QCoreApplication::sendEvent(item, &ev)) {
             event->accept();
-            return true;
+        } else {
+            QEvent::Type eventType = QEvent::None;
+            switch (event->type()) {
+                case QEvent::TabletPress:
+                    eventType = QEvent::MouseButtonPress;
+                    break;
+                case QEvent::TabletRelease:
+                    eventType = QEvent::MouseButtonRelease;
+                    break;
+                case QEvent::TabletMove:
+                    eventType = QEvent::None;
+                    break;
+                default:
+                    Q_UNREACHABLE();
+            }
+
+            if (eventType != QEvent::None) {
+                QMouseEvent mouseEvent(eventType, p, Qt::LeftButton, Qt::LeftButton, Qt::NoModifier);
+                qDebug() << "Send synthetic" << &mouseEvent;
+                QCoreApplication::sendEvent(item, &mouseEvent);
+            }
         }
+        return true;
     }
 
     return false;
