@@ -66,4 +66,110 @@ WebOSWindow {
         text: root.label
         font.pixelSize: 30
     }
+
+    Rectangle {
+        anchors.top: parent.top
+        anchors.topMargin: 40
+        anchors.right: parent.right
+        anchors.rightMargin: 40
+        width: 300
+        height: 300
+        color: "green"
+
+        property int count
+
+        Text {
+            text: 'MouseArea'
+            font.pixelSize: 30
+        }
+
+        Text {
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 40
+            anchors.left: parent.left
+            anchors.leftMargin: 40
+            id: mouseAreaClickStatus
+            text: ''
+            font.pixelSize: 30
+        }
+
+        Text {
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 80
+            anchors.left: parent.left
+            anchors.leftMargin: 40
+            id: mouseAreaStatus
+            text: ''
+            font.pixelSize: 30
+        }
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                parent.count += 1
+                mouseAreaClickStatus.text = 'clicked ' + parent.count + ' times'
+            }
+            onPressed: {
+                mouseAreaStatus.text = 'pressed'
+            }
+            onReleased: {
+                mouseAreaStatus.text = 'released'
+            }
+            onPressAndHold: {
+                mouseAreaStatus.text = 'pressAndHold'
+                mouseAreaClickStatus.text = ''
+            }
+        }
+    }
+
+    Rectangle {
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 40
+        anchors.right: parent.right
+        anchors.rightMargin: 40
+        width: 300
+        height: 300
+        color: "red"
+
+        property int count
+
+        Text {
+            text: 'MultiPointTouchArea'
+            font.pixelSize: 30
+        }
+
+        Text {
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 80
+            anchors.left: parent.left
+            anchors.leftMargin: 40
+            id: touchStatus
+            text: ''
+            font.pixelSize: 30
+        }
+
+        Text {
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 40
+            anchors.left: parent.left
+            anchors.leftMargin: 40
+            id: touchUpdateStatus
+            text: ''
+            font.pixelSize: 30
+        }
+
+        MultiPointTouchArea {
+            anchors.fill: parent
+            onTouchUpdated: {
+                parent.count += 1
+                touchUpdateStatus.text = 'touchUpdated ' + parent.count + ' times'
+            }
+            onPressed: {
+                touchStatus.text = 'pressed'
+            }
+            onReleased: {
+                touchStatus.text = 'released'
+            }
+        }
+    }
 }
