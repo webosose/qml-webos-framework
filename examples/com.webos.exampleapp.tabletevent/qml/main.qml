@@ -23,6 +23,8 @@ WebOSWindow {
     windowType: "_WEBOS_WINDOW_TYPE_CARD"
 
     property string label
+    property string labelOther
+    property string firstUniqueId: ""
 
     TabletItem {
         id: tabletItem
@@ -41,6 +43,12 @@ WebOSWindow {
         }
 
         function printOutput(str) {
+            var uniqueIdString = Number(uniqueId).toString();
+            if (firstUniqueId === "") {
+                firstUniqueId = uniqueIdString;
+                console.log('firstUniqueId: ' + firstUniqueId);
+            }
+
             var output;
             output = "Event\n";
             output += "Device: " + device + "\n";
@@ -52,8 +60,12 @@ WebOSWindow {
             output += "xTilt: " + xTilt + "\n";
             output += "yTilt: " + yTilt + "\n";
             output += "Pressure: " + pressure + "\n";
+            output += "UniqueId: " + uniqueId + "\n";
 
-            root.label = output;
+            if (uniqueIdString === firstUniqueId)
+                root.label = output;
+            else
+                root.labelOther = output;
         }
     }
 
@@ -64,6 +76,16 @@ WebOSWindow {
         anchors.left: parent.left
         anchors.leftMargin: 40
         text: root.label
+        font.pixelSize: 30
+    }
+
+    Text {
+        id: textOther
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 40
+        anchors.left: parent.left
+        anchors.leftMargin: 40
+        text: root.labelOther
         font.pixelSize: 30
     }
 

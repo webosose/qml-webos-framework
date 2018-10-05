@@ -50,6 +50,7 @@ void TabletItem::setValues(QTabletEvent *event)
     m_xTilt = event->xTilt();
     m_yTilt = event->yTilt();
     m_pressure = event->pressure();
+    m_uniqueId = event->uniqueId();
 
     switch (event->device()) {
     case QTabletEvent::NoDevice:

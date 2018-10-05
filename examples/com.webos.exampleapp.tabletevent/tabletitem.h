@@ -28,6 +28,7 @@ class TabletItem : public QQuickItem
     Q_PROPERTY(qreal pressure READ pressure)
     Q_PROPERTY(QString type READ type)
     Q_PROPERTY(QString device READ device)
+    Q_PROPERTY(qint64 uniqueId READ uniqueId)
 
 public:
     TabletItem(QQuickItem* parent = nullptr);
@@ -43,6 +44,7 @@ public:
     qreal pressure() { return m_pressure; };
     QString type() { return m_type; };
     QString device() { return m_device; };
+    qint64 uniqueId() { return m_uniqueId; };
 
 signals:
     void moved();
@@ -60,6 +62,7 @@ private:
     int m_xTilt;
     int m_yTilt;
     qreal m_pressure;
+    qint64 m_uniqueId;
 };
 
 #endif // TABLETITEM_H
