@@ -427,13 +427,14 @@ bool WebOSQuickWindow::handleTabletEvent(QQuickItem* item, QTabletEvent* event)
 
     QPointF p = item->mapFromScene(event->posF());
 
-    if (item->contains(p)) {
+    if (item->contains(p) && itemPrivate->acceptedMouseButtons()) {
         QTabletEvent ev(event->type(), p, p, event->device(), event->pointerType(),
                         event->pressure(), event->xTilt(), event->yTilt(), event->tangentialPressure(),
                         event->rotation(), event->z(), event->modifiers(), event->uniqueId(), event->button(), event->buttons());
         ev.accept();
         if (QCoreApplication::sendEvent(item, &ev)) {
             event->accept();
+            return true;
         } else {
             QEvent::Type eventType = QEvent::None;
             switch (event->type()) {
@@ -455,9 +456,10 @@ bool WebOSQuickWindow::handleTabletEvent(QQuickItem* item, QTabletEvent* event)
                 qDebug() << "Send synthetic" << &mouseEvent;
                 QCoreApplication::sendEvent(item, &mouseEvent);
             }
+            //MOVE event is not handled at this time. So we just ignore this event.
+            event->accept();
+            return true;
         }
-        return true;
     }
-
     return false;
 }
