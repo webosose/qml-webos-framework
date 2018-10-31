@@ -125,6 +125,26 @@ WebOSWindow {
             font.pixelSize: 30
         }
 
+        Text {
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 120
+            anchors.left: parent.left
+            anchors.leftMargin: 40
+            id: mouseAreaX
+            text: ''
+            font.pixelSize: 30
+        }
+
+        Text {
+            anchors.bottom: parent.bottom
+            anchors.bottomMargin: 160
+            anchors.left: parent.left
+            anchors.leftMargin: 40
+            id: mouseAreaY
+            text: ''
+            font.pixelSize: 30
+        }
+
         MouseArea {
             anchors.fill: parent
             onClicked: {
@@ -140,6 +160,12 @@ WebOSWindow {
             onPressAndHold: {
                 mouseAreaStatus.text = 'pressAndHold'
                 mouseAreaClickStatus.text = ''
+            }
+            onMouseXChanged: {
+                mouseAreaX.text = "X:" + mouseX;
+            }
+            onMouseYChanged: {
+                mouseAreaY.text = "Y:" + mouseY;
             }
         }
     }

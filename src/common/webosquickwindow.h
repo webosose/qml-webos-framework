@@ -194,6 +194,7 @@ protected:
     bool eventFilter(QObject *obj, QEvent *event);
     void mouseMoveEvent(QMouseEvent *ev);
     bool event(QEvent *ev);
+    bool translateTabletToMouse(QTabletEvent* event, QQuickItem* item);
 
 private:
     QQmlPropertyMap m_windowProperties;

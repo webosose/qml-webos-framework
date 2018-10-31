@@ -15,6 +15,7 @@
 
 TabletItem::TabletItem(QQuickItem* parent) : QQuickItem(parent)
 {
+    setAcceptedMouseButtons(Qt::LeftButton|Qt::RightButton);
 }
 
 TabletItem::~TabletItem()
