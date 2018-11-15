@@ -24,6 +24,7 @@ WebOSWindow {
 
     property string label
     property string labelOther
+    property string labelTouch
     property string firstUniqueId: ""
 
     TabletItem {
@@ -42,6 +43,14 @@ WebOSWindow {
             printOutput("Released");
         }
 
+        onTouchUpdated: {
+            var output = "Touch Event\n";
+            output += "Type: " + eventType + "\n";
+            output += "x: " + xTouch + "\n";
+            output += "y: " + yTouch + "\n";
+            root.labelTouch = output;
+        }
+
         function printOutput(str) {
             var uniqueIdString = Number(uniqueId).toString();
             if (firstUniqueId === "") {
@@ -50,7 +59,7 @@ WebOSWindow {
             }
 
             var output;
-            output = "Event\n";
+            output = "Tablet Event\n";
             output += "Device: " + device + "\n";
             output += "Type: " + type + "\n";
             output += "Action: " + str + "\n";
@@ -86,6 +95,16 @@ WebOSWindow {
         anchors.left: parent.left
         anchors.leftMargin: 40
         text: root.labelOther
+        font.pixelSize: 30
+    }
+
+    Text {
+        id: textTouch
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 40
+        anchors.left: parent.left
+        anchors.leftMargin: 500
+        text: root.labelTouch
         font.pixelSize: 30
     }
 

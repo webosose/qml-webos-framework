@@ -43,6 +43,33 @@ bool TabletItem::event(QEvent *event)
     return QQuickItem::event(event);
 }
 
+void TabletItem::touchEvent(QTouchEvent *event)
+{
+    setTouchValues(static_cast<QTouchEvent *>(event));
+    emit touchUpdated();
+}
+
+void TabletItem::setTouchValues(QTouchEvent *event)
+{
+    QList<QTouchEvent::TouchPoint> touchPoints = event->touchPoints();
+    if (touchPoints.isEmpty())
+        return;
+
+    m_xTouch = touchPoints[0].screenPos().x();
+    m_yTouch = touchPoints[0].screenPos().y();
+    switch (event->type()) {
+    case QEvent::TouchBegin:
+        m_eventType = "TouchBegin";
+        break;
+    case QEvent::TouchUpdate:
+        m_eventType = "TouchUpdate";
+        break;
+    case QEvent::TouchEnd:
+        m_eventType = "TouchEnd";
+        break;
+    }
+}
+
 void TabletItem::setValues(QTabletEvent *event)
 {
     m_id = event->uniqueId();
