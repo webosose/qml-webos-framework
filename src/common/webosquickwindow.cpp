@@ -36,6 +36,7 @@ WebOSQuickWindow::WebOSQuickWindow(QWindow *parent)
     , m_keyMask(WebOSQuickWindow::KeyMaskDefault)
     , m_cursorVisible(false)
     , m_keepAlive(false)
+    , m_mouseGrabberItem(nullptr)
 {
     // "Force" create the platform window as without it the property settings
     // will fail even when tied to the visibility of the window
@@ -437,8 +438,7 @@ bool WebOSQuickWindow::handleTabletEvent(QQuickItem* item, QTabletEvent* event)
                         event->z(), event->modifiers(), event->uniqueId(),
                         event->button(), event->buttons());
         ev.accept();
-
-        if (!mouseGrabberItem() && QCoreApplication::sendEvent(item, &ev)) {
+        if (!m_mouseGrabberItem && QCoreApplication::sendEvent(item, &ev)) {
             event->accept();
             return true;
         } else {
@@ -462,11 +462,13 @@ bool WebOSQuickWindow::translateTabletToMouse(QTabletEvent* event, QQuickItem* i
                                Qt::LeftButton, Qt::LeftButton, event->modifiers());
         QQuickWindow::mousePressEvent(&mouseEvent);
         accepted = mouseEvent.isAccepted();
+        m_mouseGrabberItem = mouseGrabberItem();
     } else if (event->type() == QEvent::TabletRelease) {
         QMouseEvent mouseEvent(QEvent::MouseButtonRelease, event->pos(),
                                Qt::LeftButton, Qt::NoButton, event->modifiers());
         QQuickWindow::mouseReleaseEvent(&mouseEvent);
         accepted = mouseEvent.isAccepted();
+        m_mouseGrabberItem = nullptr;
     } else if (event->type() == QEvent::TabletMove) {
         QMouseEvent mouseEvent(QEvent::MouseMove, event->pos(),
                                Qt::LeftButton, Qt::LeftButton, event->modifiers());

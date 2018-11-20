@@ -217,6 +217,8 @@ private:
     QPoint m_mousePosition;
 
     bool m_keepAlive;
+    // Keeps track of the item currently receiving mouse events
+    QQuickItem *m_mouseGrabberItem;
     bool handleTabletEvent(QQuickItem* item, QTabletEvent* event);
 
 private slots:
