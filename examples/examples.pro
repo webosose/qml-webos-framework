@@ -21,4 +21,4 @@ OBJECTS_DIR = .obj
 
 CONFIG += qt debug
 
-SUBDIRS = gallery bare-eos overlay-window vkb-overlay com.webos.exampleapp.tabletevent
+SUBDIRS = gallery bare-eos overlay-window vkb-overlay com.webos.exampleapp.tabletevent com.webos.exampleapp.canvastablet
