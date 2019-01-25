@@ -114,7 +114,10 @@ void TabletItem::setValues(QTabletEvent *event)
         m_type = "Cursor";
         break;
     case QTabletEvent::Eraser:
-        m_type = "Eraser";
+        if (event->buttons() & Qt::ExtraButton24)
+            m_type = "Palm Eraser";
+        else
+            m_type = "Pen Eraser";
         break;
     case QTabletEvent::UnknownPointer:
     default:
