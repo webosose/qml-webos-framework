@@ -27,54 +27,61 @@ WebOSWindow {
     property string labelTouch
     property string firstUniqueId: ""
 
-    TabletItem {
-        id: tabletItem
-        anchors.fill: parent
+    Rectangle {
+        width: 700
+        height: 700
+        color: "red"
 
-        onMoved: {
-            printOutput("Moved");
-        }
 
-        onPressed: {
-            printOutput("Pressed");
-        }
+        TabletItem {
+            id: tabletItem
+            anchors.fill: parent
 
-        onReleased: {
-            printOutput("Released");
-        }
-
-        onTouchUpdated: {
-            var output = "Touch Event\n";
-            output += "Type: " + eventType + "\n";
-            output += "x: " + xTouch + "\n";
-            output += "y: " + yTouch + "\n";
-            root.labelTouch = output;
-        }
-
-        function printOutput(str) {
-            var uniqueIdString = Number(uniqueId).toString();
-            if (firstUniqueId === "") {
-                firstUniqueId = uniqueIdString;
-                console.log('firstUniqueId: ' + firstUniqueId);
+            onMoved: {
+                printOutput("Moved");
             }
 
-            var output;
-            output = "Tablet Event\n";
-            output += "Device: " + device + "\n";
-            output += "Type: " + type + "\n";
-            output += "Action: " + str + "\n";
-            output += "x: " + pos.x + "\n";
-            output += "y: " + pos.y + "\n";
-            output += "z: " + z + "\n";
-            output += "xTilt: " + xTilt + "\n";
-            output += "yTilt: " + yTilt + "\n";
-            output += "Pressure: " + pressure + "\n";
-            output += "UniqueId: " + uniqueId + "\n";
+            onPressed: {
+                printOutput("Pressed");
+            }
 
-            if (uniqueIdString === firstUniqueId)
-                root.label = output;
-            else
-                root.labelOther = output;
+            onReleased: {
+                printOutput("Released");
+            }
+
+            onTouchUpdated: {
+                var output = "Touch Event\n";
+                output += "Type: " + eventType + "\n";
+                output += "x: " + xTouch + "\n";
+                output += "y: " + yTouch + "\n";
+                root.labelTouch = output;
+            }
+
+            function printOutput(str) {
+                var uniqueIdString = Number(uniqueId).toString();
+                if (firstUniqueId === "") {
+                    firstUniqueId = uniqueIdString;
+                    console.log('firstUniqueId: ' + firstUniqueId);
+                }
+
+                var output;
+                output = "Tablet Event\n";
+                output += "Device: " + device + "\n";
+                output += "Type: " + type + "\n";
+                output += "Action: " + str + "\n";
+                output += "x: " + pos.x + "\n";
+                output += "y: " + pos.y + "\n";
+                output += "z: " + z + "\n";
+                output += "xTilt: " + xTilt + "\n";
+                output += "yTilt: " + yTilt + "\n";
+                output += "Pressure: " + pressure + "\n";
+                output += "UniqueId: " + uniqueId + "\n";
+
+                if (uniqueIdString === firstUniqueId)
+                    root.label = output;
+                else
+                    root.labelOther = output;
+            }
         }
     }
 

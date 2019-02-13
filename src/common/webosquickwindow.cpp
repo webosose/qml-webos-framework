@@ -409,6 +409,28 @@ bool WebOSQuickWindow::event(QEvent *ev)
 
 bool WebOSQuickWindow::handleTabletEvent(QQuickItem* item, QTabletEvent* event)
 {
+    //event grabber exists. Send it directly.
+    if (m_tabletGrabberItem) {
+        QPointF p = m_tabletGrabberItem->mapFromScene(event->posF());
+        QTabletEvent ev(event->type(), p, p, event->device(),
+                        event->pointerType(), event->pressure(),
+                        event->xTilt(), event->yTilt(),
+                        event->tangentialPressure(), event->rotation(),
+                        event->z(), event->modifiers(), event->uniqueId(),
+                        event->button(), event->buttons());
+        ev.accept();
+
+        QCoreApplication::sendEvent(m_tabletGrabberItem, &ev);
+        event->accept();
+
+        if (event->type() == QEvent::TabletRelease) {
+            m_tabletGrabberItem = nullptr;
+        }
+        return true;
+    } else if (m_mouseGrabberItem) {
+        return translateTabletToMouse(event, NULL);
+    }
+
     //The Algorithm finds top-most item that can handle tablet event.
     //Main idea is borrowed from QQuickWindowPrivate::deliverHoverEvent().
     QQuickItemPrivate *itemPrivate = QQuickItemPrivate::get(item);
@@ -430,6 +452,12 @@ bool WebOSQuickWindow::handleTabletEvent(QQuickItem* item, QTabletEvent* event)
 
     QPointF p = item->mapFromScene(event->posF());
 
+#ifdef __WEBOS_TABLET_DEBUG__
+    qDebug() << "tablet item finding... tablet grabber:" << m_tabletGrabberItem <<
+        " mouse grabber:" << m_mouseGrabberItem << " item:" << item << "=" <<
+        item->contains(p) << "," << itemPrivate->acceptedMouseButtons();
+#endif
+
     if (item->contains(p) && itemPrivate->acceptedMouseButtons()) {
         QTabletEvent ev(event->type(), p, p, event->device(),
                         event->pointerType(), event->pressure(),
@@ -439,6 +467,9 @@ bool WebOSQuickWindow::handleTabletEvent(QQuickItem* item, QTabletEvent* event)
                         event->button(), event->buttons());
         ev.accept();
         if (!m_mouseGrabberItem && QCoreApplication::sendEvent(item, &ev)) {
+            if (event->type() == QEvent::TabletPress) {
+                m_tabletGrabberItem = item;
+            }
             event->accept();
             return true;
         } else {
@@ -453,7 +484,6 @@ bool WebOSQuickWindow::handleTabletEvent(QQuickItem* item, QTabletEvent* event)
 }
 
 bool WebOSQuickWindow::translateTabletToMouse(QTabletEvent* event, QQuickItem* item)
-
 {
     Q_UNUSED(item);
     bool accepted = false;
@@ -475,6 +505,5 @@ bool WebOSQuickWindow::translateTabletToMouse(QTabletEvent* event, QQuickItem* i
         QQuickWindow::mouseMoveEvent(&mouseEvent);
         accepted = mouseEvent.isAccepted();
     }
-
     return accepted;
 }

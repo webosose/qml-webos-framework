@@ -219,6 +219,7 @@ private:
     bool m_keepAlive;
     // Keeps track of the item currently receiving mouse events
     QQuickItem *m_mouseGrabberItem;
+    QQuickItem *m_tabletGrabberItem = nullptr;
     bool handleTabletEvent(QQuickItem* item, QTabletEvent* event);
 
 private slots:
