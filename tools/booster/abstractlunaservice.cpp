@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018 LG Electronics, Inc.
+// Copyright (c) 2014-2019 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@
 
 #include <glib.h>
 #include <luna-service2/lunaservice.h>
-
 
 namespace {
 
@@ -57,8 +56,7 @@ struct MetaHelper
     ~MetaHelper();
 
     QVector<LSSignal> signalsArray;
-    QVector<LSMethod> privateMethodsArray;
-    QVector<LSMethod> publicMethodsArray;
+    QVector<LSMethod> methodsArray;
     QList<QMetaMethod> signalsToForward;
 };
 
@@ -72,13 +70,10 @@ MetaHelper::MetaHelper(const QMetaObject* metaObject)
             signalsToForward << m;
 
         } else if (m.methodType() == QMetaMethod::Slot) {
-
             switch (m.access()) {
             case QMetaMethod::Protected:
-                privateMethodsArray << LSMethod {qstrdup(m.name()), &ls_callback, (LSMethodFlags)0};
-                break;
             case QMetaMethod::Public:
-                publicMethodsArray << LSMethod {qstrdup(m.name()), &ls_callback, (LSMethodFlags)0};
+                methodsArray << LSMethod {qstrdup(m.name()), &ls_callback, (LSMethodFlags)0};
                 break;
             default:
                 // skipping private slots
@@ -89,16 +84,14 @@ MetaHelper::MetaHelper(const QMetaObject* metaObject)
         }
     }
 
-    signalsArray << LSSignal { nullptr, (LSSignalFlags)0 };
-    privateMethodsArray << LSMethod {nullptr, nullptr, (LSMethodFlags)0};
-    publicMethodsArray << LSMethod {nullptr, nullptr, (LSMethodFlags)0};
+    signalsArray << LSSignal {nullptr, (LSSignalFlags)0 };
+    methodsArray << LSMethod {nullptr, nullptr, (LSMethodFlags)0};
 }
 
 MetaHelper::~MetaHelper()
 {
     foreach (auto item, signalsArray) delete[] item.name;
-    foreach (auto item, privateMethodsArray) delete[] item.name;
-    foreach (auto item, publicMethodsArray) delete[] item.name;
+    foreach (auto item, methodsArray) delete[] item.name;
 }
 
 } // namespace
@@ -131,38 +124,34 @@ void LunaServiceMessage::respond(const QJsonDocument &reply) const
 
 void AbstractLunaService::subscribeAdd(const LunaServiceMessage & lsmsg, const char *key)
 {
-    Q_ASSERT (m_psh);
+    Q_ASSERT (m_sh);
 
-    LSHandle *sh = LSPalmServiceGetPrivateConnection(m_psh);
-    Q_ASSERT (sh);
     LSMessage * msg = const_cast<LSMessage *>(lsmsg.getMsg());
-    LSSubscriptionAdd(sh, key, msg, nullptr);
+    LSSubscriptionAdd(m_sh, key, msg, nullptr);
 }
 
 void AbstractLunaService::subscribesReply(const QJsonDocument &data, const char *key)
 {
-    Q_ASSERT (m_psh);
+    Q_ASSERT (m_sh);
 
-    LSHandle *sh = LSPalmServiceGetPrivateConnection(m_psh);
-    Q_ASSERT (sh);
-    LSSubscriptionReply(sh, key, data.toJson().data(), nullptr);
+    LSSubscriptionReply(m_sh, key, data.toJson().data(), nullptr);
 }
 
 AbstractLunaService::AbstractLunaService(QObject *parent) :
     QObject (parent),
-    m_psh (nullptr)
+    m_sh (nullptr)
 {
 }
 
 AbstractLunaService::~AbstractLunaService()
 {
-    Q_ASSERT (m_psh);
+    Q_ASSERT (m_sh);
 
     LSError err;
     LSErrorInit(&err);
 
-    bool res = LSUnregisterPalmService(m_psh, &err);
-    Q_ASSERT_X (res, "LSUnregisterPalmService", err.message);
+    bool res = LSUnregister(m_sh, &err);
+    Q_ASSERT_X (res, "LSUnregister", err.message);
 }
 
 bool AbstractLunaService::registerService(const char *serviceName,
@@ -175,29 +164,30 @@ bool AbstractLunaService::registerService(const char *serviceName,
     LSError err;
     LSErrorInit(&err);
 
-    if ( !LSRegisterPalmService(m_serviceName.toLatin1().constData(), &m_psh, &err)) {
+    if (!LSRegister(m_serviceName.toLatin1().constData(), &m_sh, &err)) {
         qFatal("Failed to register Luna Service: '%s'. Reason: %s",
                qPrintable(m_serviceName),
                err.message);
     }
 
     MetaHelper meta {metaObject()};
-    if ( !LSPalmServiceRegisterCategory(m_psh, methodsCategory,
-                                        meta.publicMethodsArray.data(),
-                                        meta.privateMethodsArray.data(),
+
+    if (!LSRegisterCategory(m_sh, methodsCategory,
+                                        meta.methodsArray.data(),
                                         nullptr,
-                                        this, &err)) {
-        qFatal("Failed to register Luna Service Category '%s'. Reason '%s",
+                                        nullptr,
+                                        &err)) {
+        qFatal("Failed to register Luna Service Category '%s'. Reason '%s'",
+               methodsCategory,
+               err.message);
+    }
+    if (!LSCategorySetData(m_sh, methodsCategory, this, &err) ) {
+        qFatal("Failed to set user data for the category '%s'. Reason '%s'",
                methodsCategory,
                err.message);
     }
 
-    LSHandle *sh = LSPalmServiceGetPrivateConnection(m_psh);
-    if (!sh) {
-        qFatal("Failed to get private handle to Luna Service");
-    }
-
-    if ( !LSRegisterCategory(sh, m_signalsCategory.toLatin1().constData(),
+    if (!LSRegisterCategory(m_sh, m_signalsCategory.toLatin1().constData(),
                              nullptr,
                              meta.signalsArray.data(),
                              nullptr,
@@ -205,7 +195,7 @@ bool AbstractLunaService::registerService(const char *serviceName,
         qFatal("LSRegisterCategory", err.message);
     }
 
-    if ( !LSGmainContextAttachPalmService(m_psh, g_main_context_default(), &err)) {
+    if (!LSGmainContextAttach(m_sh, g_main_context_default(), &err)) {
         qFatal("Failed to attach Luna Service to event loop. Reason: %s", err.message);
     }
 
@@ -221,7 +211,7 @@ bool AbstractLunaService::registerService(const char *serviceName,
 
 void AbstractLunaService::onSignalEmitted(const QJsonDocument &params)
 {
-    Q_ASSERT (m_psh);
+    Q_ASSERT (m_sh);
 
     LSError err;
     LSErrorInit(&err);
@@ -235,10 +225,6 @@ void AbstractLunaService::onSignalEmitted(const QJsonDocument &params)
     path << method.name();
     const QByteArray uri = "palm://" + path.join('/').toLatin1();
 
-    LSHandle *sh = LSPalmServiceGetPrivateConnection(m_psh);
-    Q_ASSERT (sh);
-
-    bool res = LSSignalSend(sh, uri.constData(), params.toJson().data(), &err);
+    bool res = LSSignalSend(m_sh, uri.constData(), params.toJson().data(), &err);
     Q_ASSERT_X (res, "LSSignalSend", err.message);
-
 }

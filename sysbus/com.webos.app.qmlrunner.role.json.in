@@ -1,0 +1,19 @@
+{
+    \"exeName\":\"$$WEBOS_INSTALL_BINS/qml-runner\",
+    \"type\": \"privileged\",
+    \"allowedNames\": [\"com.webos.app.qmlrunner-*\", \"com.webos.media.client.*\", \"\"],
+    \"permissions\": [
+        {
+            \"service\": \"com.webos.app.qmlrunner-*\",
+            \"outbound\": [\"com.webos.applicationManager\"]
+        }, {
+            \"service\": \"\",
+            \"inbound\": [\"com.webos.service.videosinkmanager\", \"com.webos.service.tv.display\"],
+            \"outbound\": [\"com.webos.service.videosinkmanager\", \"com.webos.service.tv.display\"]
+        }, {
+            \"service\": \"com.webos.media.client.*\",
+            \"inbound\": [\"com.webos.media\"],
+            \"outbound\": [\"com.webos.media\"]
+        }
+    ]
+}

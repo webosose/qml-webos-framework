@@ -1,0 +1,10 @@
+{
+    "booster.control":{
+        "description":"Take an action on booster service",
+        "public":false
+    },
+    "booster.status":{
+        "description":"Get status of booster service.",
+        "public":false
+    }
+}

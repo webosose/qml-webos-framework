@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018 LG Electronics, Inc.
+// Copyright (c) 2014-2019 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 #include <QObject>
 #include <QSharedData>
 
-struct LSPalmService;
+struct LSHandle;
 struct LSMessage;
 
 /*
@@ -71,7 +71,7 @@ private slots:
     void onSignalEmitted(const QJsonDocument &params);
 
 protected:
-    LSPalmService *m_psh;
+    LSHandle *m_sh;
 
 private:
 

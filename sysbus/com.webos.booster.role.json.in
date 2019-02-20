@@ -1,0 +1,11 @@
+{
+    \"exeName\":\"$$WEBOS_INSTALL_BINS/boosterd\",
+    \"type": \"privileged\",
+    \"allowedNames\": [\"com.webos.booster\"],
+    \"permissions\": [
+        {
+            \"service\":\"com.webos.booster\",
+            \"outbound\": []
+        }
+    ]
+}

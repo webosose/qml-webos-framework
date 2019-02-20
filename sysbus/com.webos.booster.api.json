@@ -1,0 +1,9 @@
+{
+    "booster.control": [
+        "com.webos.booster/close",
+        "com.webos.booster/launch"
+    ],
+    "booster.status": [
+        "com.webos.booster/running"
+    ]
+}
