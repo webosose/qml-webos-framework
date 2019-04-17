@@ -192,7 +192,7 @@ bool AbstractLunaService::registerService(const char *serviceName,
                              meta.signalsArray.data(),
                              nullptr,
                              &err)) {
-        qFatal("LSRegisterCategory", err.message);
+        qFatal("LSRegisterCategory error '%s'", err.message);
     }
 
     if (!LSGmainContextAttach(m_sh, g_main_context_default(), &err)) {
