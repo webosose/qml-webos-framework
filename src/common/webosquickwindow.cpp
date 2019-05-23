@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018 LG Electronics, Inc.
+// Copyright (c) 2014-2019 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -123,6 +123,15 @@ void WebOSQuickWindow::setAppId(const QString& id)
         m_windowProperties.insert(WP_APPID, QVariant(id));
         setWindowProperty(WP_APPID, id);
         emit appIdChanged();
+    }
+}
+
+void WebOSQuickWindow::setDisplayAffinity(int affinity)
+{
+    if (affinity != m_windowProperties.value(WP_DISPLAYAFFINITY)) {
+        m_windowProperties.insert(WP_DISPLAYAFFINITY, QVariant(affinity));
+        setWindowProperty(WP_DISPLAYAFFINITY, QString("%1").arg(affinity));
+        emit displayAffinityChanged();
     }
 }
 

@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018 LG Electronics, Inc.
+// Copyright (c) 2014-2019 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@
 #define WP_SUBTITLE QStringLiteral("subtitle")
 #define WP_WINDOWTYPE QStringLiteral("_WEBOS_WINDOW_TYPE")
 #define WP_APPID QStringLiteral("appId")
+#define WP_DISPLAYAFFINITY QStringLiteral("displayAffinity")
 
 #ifndef NO_WEBOS_PLATFORM
 class WebOSShellSurface;
@@ -57,6 +58,7 @@ class WebOSQuickWindow : public QQuickWindow, public QQmlParserStatus
     Q_PROPERTY(QString windowType READ windowType WRITE setWindowType NOTIFY windowTypeChanged)
     Q_PROPERTY(QPoint mousePosition READ mousePosition NOTIFY mousePositionChanged)
     Q_PROPERTY(QString appId READ appId WRITE setAppId NOTIFY appIdChanged) // TODO: read-only
+    Q_PROPERTY(int displayAffinity READ displayAffinity WRITE setDisplayAffinity NOTIFY displayAffinityChanged)
     Q_PROPERTY(bool keepAlive READ keepAlive WRITE setKeepAlive NOTIFY keepAliveChanged)
     Q_PROPERTY(WebOSQuickWindow::LocationHints locationHint READ locationHint WRITE setLocationHint NOTIFY locationHintChanged)
     Q_PROPERTY(Qt::WindowState windowState READ windowState WRITE setInternalWindowState NOTIFY windowStateChanged)
@@ -126,6 +128,9 @@ public:
     QString appId() { return m_windowProperties.value(WP_APPID).toString(); }
     void setAppId(const QString& id);
 
+    int displayAffinity() { return m_windowProperties.value(WP_DISPLAYAFFINITY).toInt();; }
+    void setDisplayAffinity(int affinity);
+
     bool keepAlive() { return m_keepAlive; }
     void setKeepAlive(bool keepAlive);
 
@@ -156,6 +161,7 @@ Q_SIGNALS:
     void subtitleChanged();
     void windowTypeChanged();
     void appIdChanged();
+    void displayAffinityChanged();
     void keepAliveChanged();
     void locationHintChanged();
     void windowStateChanged();

@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018 LG Electronics, Inc.
+// Copyright (c) 2014-2019 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ WebOSWindow {
     subtitle: "Testing the subtitle"
     windowType: "_WEBOS_WINDOW_TYPE_POPUP"
     appId: "com.webos.app.examplewindow"
+    displayAffinity: params["displayAffinity"]
 
     /*!
      * The location hint can be of
