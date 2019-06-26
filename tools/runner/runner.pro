@@ -1,4 +1,4 @@
-# Copyright (c) 2014-2018 LG Electronics, Inc.
+# Copyright (c) 2015-2019 LG Electronics, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,29 +17,7 @@
 TEMPLATE = app
 TARGET = qml-runner
 
-QT += qml quick gui-private network
-CONFIG += c++11
-CONFIG -= app_bundle
-
-include(../../src/common/common.pri)
-
-CONFIG += webos webos-service
-WEBOS_SYSBUS_DIR = $$PWD/../../sysbus
-
-SOURCES += main.cpp apploader.cpp ipcclient.cpp lunaservicewrapper.cpp applifecyclemanager.cpp
-HEADERS += apploader.h ipcclient.h lunaservicewrapper.h applifecyclemanager.h
-
-
-qml-profiler {
-    DEFINES += QMLJSDEBUGGER
-}
-
-PKGCONFIG += glib-2.0 luna-service2
-!no_webos_platform {
-    CONFIG += link_pkgconfig
-    PKGCONFIG += PmLogLib
-    DEFINES += USE_PMLOGLIB
-}
+include(runner.pri)
 
 target.path = $$WEBOS_INSTALL_BINS
 
