@@ -427,8 +427,16 @@ bool WebOSQuickWindow::handleTabletEvent(QQuickItem* item, QTabletEvent* event)
             m_tabletGrabberItem = nullptr;
         }
         return true;
-    } else if (m_mouseGrabberItem) {
-        return translateTabletToMouse(event, NULL);
+    }
+
+    if (m_mouseGrabberItem) {
+        if (m_mouseGrabberItem == mouseGrabberItem()) {
+            return translateTabletToMouse(event, NULL);
+        } else {
+            //Mouse grabber updated by QQuickItem's status change,
+            //such as visible, enable and etc...
+            m_mouseGrabberItem = nullptr;
+        }
     }
 
     //The Algorithm finds top-most item that can handle tablet event.
