@@ -37,6 +37,9 @@ public:
 public slots:
     bool loadApplication(const QString &appId, const QString &mainQml, const QVariant &params);
     void reloadApplication(const QVariant &params);
+#if defined(SMACK_ENABLED)
+    int setProcessSmackLabel(const std::string& appId);
+#endif
     void terminate();
 
 private:

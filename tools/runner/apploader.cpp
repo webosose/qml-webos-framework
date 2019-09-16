@@ -24,10 +24,14 @@
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
 #include <QtCore/QJsonValue>
-
 #include "apploader.h"
-
 #include <QDebug>
+
+#if defined(SMACK_ENABLED)
+#include <QCryptographicHash>
+#include <unistd.h>
+#include <fcntl.h>
+#endif
 
 AppLoader::AppLoader (QObject * parent)
     : QObject (parent),
@@ -104,6 +108,78 @@ void AppLoader::reloadApplication(const QVariant &params)
     m_window->showFullScreen();
 }
 
+#if defined(SMACK_ENABLED)
+std::string GetSmackLabelFromAppId(const std::string& appId, const std::string& prefix) {
+  const int MAX_SMACK_LABEL_LENGTH = 255;
+  const int MAX_APP_ID_LENGTH = 128;
+  std::string label, smack_label;
+  bool filtered = false;
+
+  auto filter_appId = [=, &filtered] {
+    std::string input(appId);
+    input.erase(std::remove_if(input.begin(), input.end(),
+                               [](const char& c) {
+                                 switch (c) {
+                                   case '\\':
+                                   case '/':
+                                   case '"':
+                                   case '\'':
+                                     return true;
+                                   default:
+                                     return false;
+                                 }
+                               }),
+                input.end());
+
+    if (input.size() < appId.size())
+      filtered = true;
+
+    return input;
+  };
+
+  auto sha256 = [](const std::string& input) {
+    // Create a cryptographic hash object for SHA-256
+    QCryptographicHash hash(QCryptographicHash::Sha256);
+    hash.addData(input.c_str());
+    QByteArray hashedData = hash.result();
+    QString hashedString = QString(hashedData.toHex());
+    return hashedString.toStdString();
+  };
+
+  label = prefix + filter_appId();
+  // 255 is the max length of smack label
+  if (label.length() <= MAX_SMACK_LABEL_LENGTH && !filtered) {
+    smack_label = label;
+  } else {
+    smack_label = (label.length() > MAX_APP_ID_LENGTH) ? std::string(label, 0, MAX_APP_ID_LENGTH) : label;
+    smack_label += sha256(appId);
+  }
+
+  return smack_label;
+}
+
+int AppLoader::setProcessSmackLabel(const std::string& appId) {
+    int fd, err = 0;
+    const std::string SMACK_APP_PREFIX = "webOS::App::";
+    std::string smack_label = GetSmackLabelFromAppId(appId, SMACK_APP_PREFIX);
+    if (-1 == (fd = open("/proc/self/attr/current", O_WRONLY))) {
+        qWarning("SMACK is not enabled");
+        return -errno;
+    }
+
+    if (-1 == write(fd, smack_label.c_str(), smack_label.length())) {
+        qFatal("Can not set SMACK label %s", smack_label.c_str());
+        err = -errno;
+    } else {
+        qInfo("Set SMACK label %s", smack_label.c_str());
+    }
+
+    close(fd);
+
+    return err;
+}
+#endif
+
 bool AppLoader::loadApplication(const QString &appId, const QString &mainQml, const QVariant &params)
 {
     qDebug() << "Entered" << Q_FUNC_INFO;
@@ -121,9 +197,12 @@ bool AppLoader::loadApplication(const QString &appId, const QString &mainQml, co
         // TODO: deprecate APP_ID in favor of QCoreApplication::applicationName
         qputenv("APP_ID", appId.toUtf8());
     }
-
+#if defined(SMACK_ENABLED)
+    setProcessSmackLabel(appId.toStdString());
+#endif
     if (!m_component)
         return false;
+
     m_component->loadUrl(mainQml);
     if ( !m_component->isReady() ) {
         qWarning("%s", qPrintable(m_component->errorString()));

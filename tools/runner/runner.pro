@@ -25,3 +25,7 @@ WEBOS_SYSBUS_DIR = $$PWD/sysbus
 target.path = $$WEBOS_INSTALL_BINS
 
 INSTALLS += target
+
+enable_webos_smack {
+    DEFINES += SMACK_ENABLED
+}
