@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018 LG Electronics, Inc.
+// Copyright (c) 2014-2019 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -72,22 +72,22 @@ void PunchThrough::setRegion(const QRectF& region)
 {
     int changed = false;
 
-    if (region.x() != x()) {
+    if (!qFuzzyCompare(region.x(), x())) {
         setX(region.x());
         changed = true;
     }
 
-    if (region.y() != y()) {
+    if (!qFuzzyCompare(region.y(), y())) {
         setY(region.y());
         changed = true;
     }
 
-    if (region.width() != width()) {
+    if (!qFuzzyCompare(region.width(), width())) {
         setWidth(region.width());
         changed = true;
     }
 
-    if (region.height() != height()) {
+    if (!qFuzzyCompare(region.height(), height())) {
         setHeight(region.height());
         changed = true;
     }
