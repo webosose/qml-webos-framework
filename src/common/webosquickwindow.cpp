@@ -42,8 +42,8 @@ WebOSQuickWindow::WebOSQuickWindow(QWindow *parent)
     setFlags(flags() | Qt::FramelessWindowHint);
 
 #ifndef NO_WINDOW_TRANSPARENCY
-    // Set support for transparet windows
-    QSurfaceFormat surfaceFormat = format();
+    // Set support for transparent windows
+    QSurfaceFormat surfaceFormat = QWindow::format();
     surfaceFormat.setAlphaBufferSize(8);
     setFormat(surfaceFormat);
 #endif
