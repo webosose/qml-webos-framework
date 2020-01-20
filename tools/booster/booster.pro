@@ -1,4 +1,4 @@
-# Copyright (c) 2014-2018 LG Electronics, Inc.
+# Copyright (c) 2014-2020 LG Electronics, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ CONFIG += c++11
 CONFIG -= app_bundle
 
 CONFIG += webos webos-service
-WEBOS_SYSBUS_DIR = $$PWD/../../sysbus
+WEBOS_SYSBUS_DIR = $$PWD/sysbus
 
 SOURCES += \
     abstractlunaservice.cpp \
