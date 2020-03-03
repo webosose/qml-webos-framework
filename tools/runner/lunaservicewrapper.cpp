@@ -1,6 +1,6 @@
 /* @@@LICENSE
  *
- *      Copyright (c) 2017 LG Electronics, Inc.
+ *      Copyright (c) 2017-2020 LG Electronics, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@
 //     running time of qml-runner. According to its functional requirement,
 //     we don't consider to manage their variables. If you wanna consider
 //     dynamic lifecycle of the instances, please think about how to manager them.
-const QString ls2ServiceName = QString("com.webos.app.qmlrunner-%1").arg(QCoreApplication::applicationPid());
+const QString ls2ServiceNameDeprecated = QString("com.webos.app.qmlrunner-%1").arg(QCoreApplication::applicationPid());
 LSHandle* lunaHandle = NULL;
 GMainLoop* mainLoop = NULL;
 
@@ -85,6 +85,13 @@ void LunaServiceWrapper::regist()
     //     - https://wiki.lgsvl.com/pages/viewpage.action?pageId=106594749
     LSError lsError;
     LSErrorInit(&lsError);
+
+    QString ls2ServiceName(ls2ServiceNameDeprecated);
+    QString ls2Name = QString::fromLatin1(qgetenv("LS2_NAME"));
+    if (!ls2Name.isEmpty())
+        ls2ServiceName = ls2Name;
+
+    qInfo() << "LS2_NAME:" << ls2ServiceName << ", ls2ServiceName:" << ls2ServiceName;
     if (!LSRegister(ls2ServiceName.toLatin1(), &lunaHandle, &lsError))
         qWarning() << "LSRegister error:" << lsError.error_code << lsError.message;
 }

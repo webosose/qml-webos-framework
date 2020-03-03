@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2019 LG Electronics, Inc.
+// Copyright (c) 2014-2020 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -131,7 +131,7 @@ public:
     QString appId() { return m_windowProperties.value(WP_APPID).toString(); }
     void setAppId(const QString& id);
 
-    int displayAffinity() { return m_windowProperties.value(WP_DISPLAYAFFINITY).toInt();; }
+    int displayAffinity();
     void setDisplayAffinity(int affinity);
 
     bool keepAlive() { return m_keepAlive; }
