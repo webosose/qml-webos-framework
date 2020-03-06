@@ -243,8 +243,14 @@ void Item::updateSampledMaterial(GeometryNode* node) {
                 // Translate to device-independent pixels to get a correct scale factors.
                 // Note that QQuickImage doesn't need this translation since its texture
                 // size already appears in device-independent pixels.
-                if (qobject_cast<QQuickImage *>(m_sourceItem) == 0)
+                QQuickImage *image = qobject_cast<QQuickImage *>(m_sourceItem);
+                if (image == 0) {
                     sourceSize = sourceSize / window()->devicePixelRatio();
+                } else {
+                    if (image->fillMode() == QQuickImage::Stretch)
+                        sourceSize = QSize(width(), height());
+                }
+
                 if (mat->m_rotation % 180) {
                     mat->m_xScale = (GLfloat) m_dest.height() / sourceSize.width();
                     mat->m_yScale = (GLfloat) m_dest.width()  / sourceSize.height();
