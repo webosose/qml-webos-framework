@@ -66,6 +66,15 @@ WebOSQuickWindow::WebOSQuickWindow(QWindow *parent)
     }
     else qWarning() << "Fail to get inputManager instance";
 #endif
+
+    if (qEnvironmentVariableIsSet("DISPLAY_ID")) {
+        bool ok = false;
+        int displayId = qgetenv("DISPLAY_ID").toInt(&ok);
+        if (ok) {
+            qInfo() << "Set displayAffinity to DISPLAY_ID:" << displayId;
+            setDisplayAffinity(displayId);
+        }
+    }
 }
 
 WebOSQuickWindow::~WebOSQuickWindow()
@@ -124,18 +133,6 @@ void WebOSQuickWindow::setAppId(const QString& id)
         setWindowProperty(WP_APPID, id);
         emit appIdChanged();
     }
-}
-
-int WebOSQuickWindow::displayAffinity()
-{
-    QString displayIdStr = QString::fromLatin1(qgetenv("DISPLAY_ID"));
-    int displayAffinity = m_windowProperties.value(WP_DISPLAYAFFINITY).toInt();
-    bool ok = false;
-    int displayId = displayIdStr.toInt(&ok);
-    if (ok)
-        displayAffinity = displayId;
-    qInfo() << "DISPLAY_ID:" << displayIdStr << ", displayAffinity:" << displayAffinity;
-    return displayAffinity;
 }
 
 void WebOSQuickWindow::setDisplayAffinity(int affinity)

@@ -131,7 +131,7 @@ public:
     QString appId() { return m_windowProperties.value(WP_APPID).toString(); }
     void setAppId(const QString& id);
 
-    int displayAffinity();
+    int displayAffinity() { return m_windowProperties.value(WP_DISPLAYAFFINITY).toInt(); }
     void setDisplayAffinity(int affinity);
 
     bool keepAlive() { return m_keepAlive; }
