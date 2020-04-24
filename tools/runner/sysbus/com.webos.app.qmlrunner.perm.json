@@ -1,5 +1,7 @@
 {
     "com.webos.app.qmlrunner-*": [
-        "applications"
+        "applications",
+        "configd",
+        "settings"
     ]
 }
