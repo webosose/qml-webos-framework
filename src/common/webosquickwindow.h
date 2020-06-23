@@ -20,16 +20,15 @@
 #include <QtQml/QQmlPropertyMap>
 #include <QtQuick/QQuickWindow>
 #include <QQmlParserStatus>
+#ifndef NO_WEBOS_PLATFORM
+#include <webosshellsurface.h>
+#endif
 
 #define WP_TITLE QStringLiteral("title")
 #define WP_SUBTITLE QStringLiteral("subtitle")
 #define WP_WINDOWTYPE QStringLiteral("_WEBOS_WINDOW_TYPE")
 #define WP_APPID QStringLiteral("appId")
 #define WP_DISPLAYAFFINITY QStringLiteral("displayAffinity")
-
-#ifndef NO_WEBOS_PLATFORM
-class WebOSShellSurface;
-#endif
 
 #include "eosregion.h"
 
@@ -67,6 +66,7 @@ class WebOSQuickWindow : public QQuickWindow, public QQmlParserStatus
     Q_PROPERTY(EosRegion* inputRegion READ inputRegion WRITE setInputRegion)
     Q_PROPERTY(WebOSQuickWindow::KeyMasks keyMask READ keyMask WRITE setKeyMask)
     Q_PROPERTY(bool cursorVisible READ cursorVisible NOTIFY cursorVisibleChanged)
+    Q_PROPERTY(QString addon READ addon WRITE setAddon NOTIFY addonChanged)
     Q_INTERFACES(QQmlParserStatus)
 
 public:
@@ -113,6 +113,14 @@ public:
     };
     Q_DECLARE_FLAGS(KeyMasks, KeyMask)
 
+    enum AddonStatus {
+        AddonStatusNull,
+        AddonStatusLoaded,
+        AddonStatusDenied,
+        AddonStatusError,
+    };
+    Q_ENUM(AddonStatus)
+
     WebOSQuickWindow(QWindow *parent = 0);
     ~WebOSQuickWindow();
 
@@ -155,6 +163,11 @@ public:
      */
     void setInternalWindowState(Qt::WindowState state);
 
+    QString addon();
+    void setAddon(const QString& path);
+
+    Q_INVOKABLE void resetAddon();
+
 public slots:
     void setCursorVisible(const bool cursorVisible);
     QPoint mousePosition() const;
@@ -174,6 +187,8 @@ Q_SIGNALS:
     void stateAboutToChange(Qt::WindowState state);
 
     void cursorVisibleChanged();
+    void addonChanged();
+    void addonStatusChanged(AddonStatus status);
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
@@ -186,6 +201,7 @@ private:
     QMap<QString, QString> m_pendingProperties;
     LocationHints m_pendingLocationHint;
     Qt::WindowState m_pendingWindowState;
+    QString m_pendingAddon;
 
     EosRegion* m_inputRegion;
     KeyMasks m_keyMask;
@@ -203,6 +219,7 @@ private:
 private slots:
     void updatePendingWindowProperties();
     void updateWindowProperties(const QString &key, const QVariant &value);
+    void onAddonStatusChanged(WebOSShellSurface::AddonStatus status);
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(WebOSQuickWindow::LocationHints)

@@ -23,7 +23,6 @@
 #include <webosplatform.h>
 #include <webosinputmanager.h>
 #include <webosshell.h>
-#include <webosshellsurface.h>
 #endif
 
 WebOSQuickWindow::WebOSQuickWindow(QWindow *parent)
@@ -254,12 +253,20 @@ void WebOSQuickWindow::updatePendingWindowProperties()
                     this, &WebOSQuickWindow::stateAboutToChange);
             QObject::connect(ss, &WebOSShellSurface::locationHintChanged,
                     this, &WebOSQuickWindow::locationHintChanged);
+            QObject::connect(ss, &WebOSShellSurface::addonChanged,
+                    this, &WebOSQuickWindow::addonChanged);
+            QObject::connect(ss, &WebOSShellSurface::addonStatusChanged,
+                    this, &WebOSQuickWindow::onAddonStatusChanged);
 
             ss->setState(m_pendingWindowState);
 
             // Make sure that the location hint get also propagated
             if (m_pendingLocationHint > 0) {
                 ss->setLocationHint((WebOSShellSurface::LocationHints)(int)m_pendingLocationHint);
+            }
+
+            if (!m_pendingAddon.isEmpty()) {
+                ss->setAddon(m_pendingAddon);
             }
 
             // Make sure that the input region get also propagated
@@ -328,4 +335,56 @@ void WebOSQuickWindow::mouseMoveEvent(QMouseEvent *ev)
 QPoint WebOSQuickWindow::mousePosition() const
 {
     return m_mousePosition;
+}
+
+QString WebOSQuickWindow::addon()
+{
+#ifndef NO_WEBOS_PLATFORM
+    WebOSShellSurface *ss = shellSurface();
+    if (ss)
+        return ss->addon();
+    return QStringLiteral();
+#else
+    return QStringLiteral();
+#endif
+}
+
+void WebOSQuickWindow::setAddon(const QString& addon)
+{
+#ifndef NO_WEBOS_PLATFORM
+    WebOSShellSurface *ss = shellSurface();
+    if (ss && isVisible()) {
+        if (addon.isEmpty())
+            ss->resetAddon();
+        else
+            ss->setAddon(addon);
+    } else {
+        qDebug() << "Window not ready, deferring addon" << addon;
+        m_pendingAddon = addon;
+    }
+#else
+    Q_UNUSED(addon);
+#endif
+}
+
+void WebOSQuickWindow::onAddonStatusChanged(WebOSShellSurface::AddonStatus status)
+{
+#ifndef NO_WEBOS_PLATFORM
+    emit addonStatusChanged(static_cast<AddonStatus>(status));
+#else
+    Q_UNUSED(addon);
+#endif
+}
+
+void WebOSQuickWindow::resetAddon()
+{
+#ifndef NO_WEBOS_PLATFORM
+    WebOSShellSurface *ss = shellSurface();
+    if (ss) {
+        ss->resetAddon();
+        m_pendingAddon.clear();
+    }
+#else
+    Q_UNUSED(addon);
+#endif
 }
