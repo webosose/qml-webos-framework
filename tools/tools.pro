@@ -15,4 +15,5 @@
 # SPDX-License-Identifier: Apache-2.0
 
 TEMPLATE = subdirs
+CONFIG += ordered
 SUBDIRS = runner runner-debug
