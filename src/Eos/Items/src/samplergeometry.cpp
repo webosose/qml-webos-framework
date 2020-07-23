@@ -245,7 +245,12 @@ void Item::updateSampledMaterial(GeometryNode* node) {
                 // size already appears in device-independent pixels.
                 QQuickImage *image = qobject_cast<QQuickImage *>(m_sourceItem);
                 if (image == 0) {
-                    sourceSize = sourceSize / window()->devicePixelRatio();
+                    if (!qFuzzyCompare(m_sourceItem->width(), sourceSize.width()) ||
+                        !qFuzzyCompare(m_sourceItem->height(), sourceSize.height())) {
+                        sourceSize = QSize(width(), height());
+                    } else {
+                        sourceSize = sourceSize / window()->devicePixelRatio();
+                    }
                 } else {
                     if (image->fillMode() == QQuickImage::Stretch)
                         sourceSize = QSize(width(), height());
