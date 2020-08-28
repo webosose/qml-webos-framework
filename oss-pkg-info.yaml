@@ -1,5 +1,4 @@
 Open Source Software Package:
 - name: webOSOSE-qml-webos-framework
-  version: 1.0.0
   source: https://github.com/webosose/qml-webos-framework
   license: Apache-2.0
