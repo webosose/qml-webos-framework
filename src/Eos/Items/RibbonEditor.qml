@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2018 LG Electronics, Inc.
+// Copyright (c) 2015-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -205,7 +205,7 @@ MouseArea {
 
     Connections {
         target: root.active ? d.ribbon : null
-        onCurrentIndexChanged: {
+        function onCurrentIndexChanged() {
             if (d.targetIndex === d.ribbon.currentIndex) {
                 return;
             }
@@ -226,7 +226,7 @@ MouseArea {
             moveInModel();
         }
 
-        onAutoScrollStop: {
+        function onAutoScrollStop () {
             if (d.ribbon.editing)
                 d.ribbon.moveDuration = 0;
             d.changeCurrentIndexAtAutoscrollEnd();

@@ -73,9 +73,15 @@ Item {
                 Connections {
                     target: root
                     Component.onCompleted: { root.shape = bezier; bezier.updateNodes(); }
-                    onAngleChanged: bezier.updateNodes()
-                    onWidthChanged: bezier.updateNodes()
-                    onHeightChanged: bezier.updateNodes()
+                    function onAngleChanged() {
+                        bezier.updateNodes();
+                    }
+                    function onWidthChanged() {
+                        bezier.updateNodes();
+                    }
+                    function onHeightChanged() {
+                        bezier.updateNodes();
+                    }
                 }
             }
         }
@@ -148,7 +154,9 @@ Item {
 
             Connections {
                 target: root
-                onSourceChanged: if (root.source) root.source.parent = sourceContainer
+                function onSourceChanged() {
+                    if (root.source) root.source.parent = sourceContainer;
+                }
                 Component.onCompleted: if (root.source) root.source.parent = sourceContainer
             }
         }

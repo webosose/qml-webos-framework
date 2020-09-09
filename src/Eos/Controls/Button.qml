@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2018 LG Electronics, Inc.
+// Copyright (c) 2013-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -214,7 +214,10 @@ FocusScope {
 
     Connections {
         target: contextualPopup
-        onStateChanged: if (contextualPopup.state == "closed") root.focus = true
+        function onStateChanged() {
+            if (contextualPopup.state == "closed")
+                root.focus = true;
+        }
     }
 
     Item {
