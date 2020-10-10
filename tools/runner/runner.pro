@@ -19,6 +19,9 @@ TARGET = qml-runner
 
 include(runner.pri)
 
+CONFIG += webos-service
+WEBOS_SYSBUS_DIR = $$PWD/sysbus
+
 target.path = $$WEBOS_INSTALL_BINS
 
 INSTALLS += target

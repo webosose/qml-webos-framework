@@ -20,8 +20,7 @@ CONFIG -= app_bundle
 
 include(../../src/common/common.pri)
 
-CONFIG += webos webos-service
-WEBOS_SYSBUS_DIR = $$PWD/sysbus
+CONFIG += webos
 
 SOURCES += \
     $$PWD/main.cpp \
