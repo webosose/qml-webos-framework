@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2018 LG Electronics, Inc.
+// Copyright (c) 2016-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -105,21 +105,36 @@ void VideoCapture::terminate()
         return;
 
     if (currentTextureId != 0 && glIsTexture(currentTextureId)) {
-        if ((currentTexture && currentTextureId != currentTexture->textureId()) || currentTexture == NULL) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        GLuint textureId = currentTexture->nativeInterface<QNativeInterface::QSGOpenGLTexture>()->nativeTexture();
+#else
+        GLuint textureId = currentTexture->textureId();
+#endif
+        if ((currentTexture && currentTextureId != textureId) || currentTexture == NULL) {
             VT_DeleteTexture(context_id, currentTextureId);
         }
         currentTextureId = 0;
     }
 
     if (nextTextureId != 0 && glIsTexture(nextTextureId)) {
-        if ((currentTexture && nextTextureId != currentTexture->textureId()) || currentTexture == NULL) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        GLuint textureId = currentTexture->nativeInterface<QNativeInterface::QSGOpenGLTexture>()->nativeTexture();
+#else
+        GLuint textureId = currentTexture->textureId();
+#endif
+        if ((currentTexture && nextTextureId != textureId) || currentTexture == NULL) {
             VT_DeleteTexture(context_id, nextTextureId);
         }
         nextTextureId = 0;
     }
 
-    if (currentTexture && currentTexture->textureId() != 0 && glIsTexture(currentTexture->textureId())) {
-        VT_DeleteTexture(context_id, currentTexture->textureId());
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        GLuint textureId = currentTexture->nativeInterface<QNativeInterface::QSGOpenGLTexture>()->nativeTexture();
+#else
+        GLuint textureId = currentTexture->textureId();
+#endif
+    if (currentTexture && textureId != 0 && glIsTexture(textureId)) {
+        VT_DeleteTexture(context_id, textureId);
         if (currentTexture) {
             currentTexture = NULL;
         }
@@ -177,8 +192,12 @@ void VideoCapture::acquireVideoTexture()
 
     if (m_isVTAvailable) {
         if (m_initialized) {
-
-            if (nextTextureId != 0 && glIsTexture(nextTextureId) && ((currentTexture && nextTextureId != currentTexture->textureId()) || currentTexture == NULL)) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+            GLuint textureId = currentTexture->nativeInterface<QNativeInterface::QSGOpenGLTexture>()->nativeTexture();
+#else
+            GLuint textureId = currentTexture->textureId();
+#endif
+            if (nextTextureId != 0 && glIsTexture(nextTextureId) && ((currentTexture && nextTextureId != textureId) || currentTexture == NULL)) {
                 VT_DeleteTexture(context_id, nextTextureId);
             }
 
@@ -221,12 +240,23 @@ QSGNode * VideoCapture::updatePaintNode(QSGNode * oldNode, UpdatePaintNodeData *
         rectNode = dynamic_cast<QSGSimpleRectNode *>(oldNode);
     }
 
-    if (nextTextureId != 0 && glIsTexture(nextTextureId) && ((currentTexture && nextTextureId != currentTexture->textureId()) || currentTexture == NULL)) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    GLuint textureId = currentTexture->nativeInterface<QNativeInterface::QSGOpenGLTexture>()->nativeTexture();
+    if (nextTextureId != 0 && glIsTexture(nextTextureId) && ((currentTexture && nextTextureId != textureId) || currentTexture == NULL)) {
+        currentTexture = currentTexture->nativeInterface<QNativeInterface::QSGOpenGLTexture>()->fromNative(nextTextureId, window(), boundingRect().size().toSize());
+    } else if (currentTextureId != 0 && glIsTexture(currentTextureId) && ((currentTexture && currentTextureId != textureId) || currentTexture == NULL)) {
+        qWarning() << "[QML Video Capture Plugin]" << " " << "Next texture is not available!";
+        currentTexture = currentTexture->nativeInterface<QNativeInterface::QSGOpenGLTexture>()->fromNative(currentTextureId, window(), boundingRect().size().toSize());
+    }
+#else
+    GLuint textureId = currentTexture->textureId();
+    if (nextTextureId != 0 && glIsTexture(nextTextureId) && ((currentTexture && nextTextureId != textureId) || currentTexture == NULL)) {
         currentTexture = window()->createTextureFromId(nextTextureId, boundingRect().size().toSize());
-    } else if (currentTextureId != 0 && glIsTexture(currentTextureId) && ((currentTexture && currentTextureId != currentTexture->textureId()) || currentTexture == NULL)) {
+    } else if (currentTextureId != 0 && glIsTexture(currentTextureId) && ((currentTexture && currentTextureId != textureId) || currentTexture == NULL)) {
         qWarning() << "[QML Video Capture Plugin]" << " " << "Next texture is not available!";
         currentTexture = window()->createTextureFromId(currentTextureId, boundingRect().size().toSize());
     }
+#endif
 
     if(currentTexture && simpleTextureNode == NULL){
         simpleTextureNode = new QSGSimpleTextureNode();
@@ -256,7 +286,12 @@ QSGNode * VideoCapture::updatePaintNode(QSGNode * oldNode, UpdatePaintNodeData *
             simpleTextureNode->markDirty(QSGNode::DirtyMaterial);
             simpleTextureNode->setRect(boundingRect());
 
-            if (nextTextureId != 0 && glIsTexture(nextTextureId) && nextTextureId == currentTexture->textureId()) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+            GLuint textureId = currentTexture->nativeInterface<QNativeInterface::QSGOpenGLTexture>()->nativeTexture();
+#else
+            GLuint textureId = currentTexture->textureId();
+#endif
+            if (nextTextureId != 0 && glIsTexture(nextTextureId) && nextTextureId == textureId) {
                 GLuint tempTextureId = nextTextureId;
                 nextTextureId = currentTextureId;
                 currentTextureId = tempTextureId;
@@ -284,7 +319,12 @@ void VideoCapture::itemChange(ItemChange change, const ItemChangeData &)
 
         // If we allow QML to do the clearing, they would clear what we paint
         // and nothing would show.
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        // setClearBeforeRendering() has been removed from QQuickWindow.
+        // See https://doc.qt.io/qt-6/quick-changes-qt6.html.
+#else
         win->setClearBeforeRendering(false);
+#endif
     }
 }
 

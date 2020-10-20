@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2018 LG Electronics, Inc.
+// Copyright (c) 2015-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,6 +20,9 @@
 #include <QSGTextureProvider>
 #include <QDebug>
 #include <QOpenGLFunctions>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QOpenGLShaderProgram>
+#endif
 
 namespace SamplerGeometry {
 
@@ -27,7 +30,12 @@ QSGMaterialType SolidShader::type;
 QSGMaterialType SampledShader::type;
 QSGMaterialType SimpleSampledShader::type;
 
-SolidShader::SolidShader(): QSGMaterialShader(*new QSGMaterialShaderPrivate) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+SolidShader::SolidShader(): QSGMaterialShader(*new QSGMaterialShaderPrivate(this))
+#else
+SolidShader::SolidShader(): QSGMaterialShader(*new QSGMaterialShaderPrivate)
+#endif
+{
     setShaderSourceFile(QOpenGLShader::Vertex, QStringLiteral(":parallelogram.vert"));
     setShaderSourceFile(QOpenGLShader::Fragment, QStringLiteral(":solid.frag"));
 }
@@ -65,8 +73,12 @@ void SolidShader::initialize()  {
     Q_ASSERT(id_color != -1);
 }
 
-
-SampledShader::SampledShader(): QSGMaterialShader(*new QSGMaterialShaderPrivate) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+SampledShader::SampledShader(): QSGMaterialShader(*new QSGMaterialShaderPrivate(this))
+#else
+SampledShader::SampledShader(): QSGMaterialShader(*new QSGMaterialShaderPrivate)
+#endif
+{
     setShaderSourceFile(QOpenGLShader::Vertex, QStringLiteral(":parallelogram.vert"));
     QStringList frag;
     if(qEnvironmentVariableIsSet("QWF_DEBUG_SHADERS")) frag << QStringLiteral(":debug.frag");
@@ -140,7 +152,12 @@ int SolidMaterial::compare(const QSGMaterial *other) const {
     return this - dynamic_cast<const SolidMaterial *>(other);
 }
 
-QSGMaterialShader *SolidMaterial::createShader() const {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+QSGMaterialShader *SolidMaterial::createShader(QSGRendererInterface::RenderMode renderMode) const
+#else
+QSGMaterialShader *SolidMaterial::createShader() const
+#endif
+{
     return new SolidShader();
 }
 
@@ -161,11 +178,21 @@ QSGMaterialType *SampledMaterial::type() const {
     return &SampledShader::type;
 }
 
-QSGMaterialShader *SampledMaterial::createShader() const {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+QSGMaterialShader *SampledMaterial::createShader(QSGRendererInterface::RenderMode renderMode) const
+#else
+QSGMaterialShader *SampledMaterial::createShader() const
+#endif
+{
     return new SampledShader();
 }
 
-SimpleSampledShader::SimpleSampledShader(): QSGMaterialShader(*new QSGMaterialShaderPrivate) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+SimpleSampledShader::SimpleSampledShader(): QSGMaterialShader(*new QSGMaterialShaderPrivate(this))
+#else
+SimpleSampledShader::SimpleSampledShader(): QSGMaterialShader(*new QSGMaterialShaderPrivate)
+#endif
+{
     setShaderSourceFile(QOpenGLShader::Vertex, QStringLiteral(":parallelogram.vert"));
     QStringList frag;
     if(qEnvironmentVariableIsSet("QWF_DEBUG_SHADERS")) frag << QStringLiteral(":debug.frag");
@@ -184,7 +211,12 @@ QSGMaterialType *SimpleSampledMaterial::type() const {
     return &SimpleSampledShader::type;
 }
 
-QSGMaterialShader *SimpleSampledMaterial::createShader() const {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+QSGMaterialShader *SimpleSampledMaterial::createShader(QSGRendererInterface::RenderMode renderMode) const
+#else
+QSGMaterialShader *SimpleSampledMaterial::createShader() const
+#endif
+{
     return new SimpleSampledShader();
 }
 

@@ -19,6 +19,9 @@
 #include <QColor>
 #include <QSGMaterial>
 #include <QSGMaterialShader>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <qopengl.h>
+#endif
 
 class QSGTextureProvider;
 
@@ -59,10 +62,14 @@ class SolidMaterial: public QSGMaterial {
 public:
     explicit SolidMaterial();
     virtual ~SolidMaterial();
+
     virtual QSGMaterialType *type() const Q_DECL_OVERRIDE;
     virtual int compare(const QSGMaterial *other) const Q_DECL_OVERRIDE;
-    virtual QSGMaterialShader *createShader() const Q_DECL_OVERRIDE;
-
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    virtual QSGMaterialShader *createShader(QSGRendererInterface::RenderMode renderMode) const override;
+#else
+    virtual QSGMaterialShader *createShader() const override;
+#endif
     //protected: //used by Item updateMaterial..?
     QColor m_color;
 private:
@@ -76,7 +83,11 @@ public:
     void updateTextureProvider() const;
 
     virtual QSGMaterialType *type() const Q_DECL_OVERRIDE;
-    virtual QSGMaterialShader *createShader() const Q_DECL_OVERRIDE;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    virtual QSGMaterialShader *createShader(QSGRendererInterface::RenderMode renderMode) const override;
+#else
+    virtual QSGMaterialShader *createShader() const override;
+#endif
 
     QSGTextureProvider* textureProvider() {
         return m_textureProvider;
@@ -109,7 +120,11 @@ public:
     virtual ~SimpleSampledMaterial();
 
     virtual QSGMaterialType *type() const Q_DECL_OVERRIDE;
-    virtual QSGMaterialShader *createShader() const Q_DECL_OVERRIDE;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    virtual QSGMaterialShader *createShader(QSGRendererInterface::RenderMode renderMode) const override;
+#else
+    virtual QSGMaterialShader *createShader() const override;
+#endif
 };
 
 } //namespace SamplerGeometry

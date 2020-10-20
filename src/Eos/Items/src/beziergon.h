@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018 LG Electronics, Inc.
+// Copyright (c) 2014-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,6 +17,10 @@
 #ifndef BEZIERGON_H
 #define BEZIERGON_H
 
+#include <QtGlobal>
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#include <QOpenGLShaderProgram>
+#endif
 #include "samplergeometry.h"
 
 namespace SamplerGeometry {

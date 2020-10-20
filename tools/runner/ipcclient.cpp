@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018 LG Electronics, Inc.
+// Copyright (c) 2014-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,8 +28,13 @@ IpcClient::IpcClient(QObject * parent) :
 {
     m_socket = new QLocalSocket(this);
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    QObject::connect(m_socket.data(), &QLocalSocket::errorOccurred,
+                     this, &IpcClient::onSocketError);
+#else
     void (QLocalSocket:: *error) (QLocalSocket::LocalSocketError) = &QLocalSocket::error;
     QObject::connect(m_socket.data(), error, this, &IpcClient::onSocketError);
+#endif
 
     QObject::connect(m_socket.data(), &QLocalSocket::readyRead,
                      this, &IpcClient::onSocketReadyRead);
@@ -49,7 +54,12 @@ void IpcClient::send(const QJsonDocument &json)
     if (m_socket && m_socket->isOpen()) {
         QByteArray data;
         QDataStream in (&data, QIODevice::WriteOnly);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        // QTBUG-81239
+        in << json.toJson(QJsonDocument::Compact);
+#else
         in << json.toBinaryData();
+#endif
         in.device()->seek(0);
         m_socket->write(data);
         m_socket->flush();
@@ -85,7 +95,11 @@ void IpcClient::onSocketReadyRead()
         }
         in >> raw_json;
     }
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    const QJsonDocument &json = QJsonDocument::fromJson(raw_json);
+#else
     const QJsonDocument &json = QJsonDocument::fromBinaryData(raw_json);
+#endif
     qDebug() << "received message:" << json.toJson(QJsonDocument::Compact);
     const QJsonObject &message = json.object();
     if (message.isEmpty()) {

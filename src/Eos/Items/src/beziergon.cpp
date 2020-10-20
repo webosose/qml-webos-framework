@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018 LG Electronics, Inc.
+// Copyright (c) 2014-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -35,7 +35,12 @@ public:
     virtual QSGMaterialType *type() const Q_DECL_OVERRIDE {
         return &SolidBeziergonShader::type;
     };
-    virtual QSGMaterialShader *createShader() const Q_DECL_OVERRIDE {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    virtual QSGMaterialShader *createShader(QSGRendererInterface::RenderMode renderMode) const override
+#else
+    virtual QSGMaterialShader *createShader() const override
+#endif
+    {
         return new SolidBeziergonShader();
     };
 };
@@ -48,7 +53,12 @@ public:
     virtual QSGMaterialType *type() const Q_DECL_OVERRIDE {
     return &SampledBeziergonShader::type;
     };
-    virtual QSGMaterialShader *createShader() const Q_DECL_OVERRIDE {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    virtual QSGMaterialShader *createShader(QSGRendererInterface::RenderMode renderMode) const override
+#else
+    virtual QSGMaterialShader *createShader() const override
+#endif
+    {
         return new SampledBeziergonShader();
     };
 };
@@ -61,7 +71,12 @@ public:
     virtual QSGMaterialType *type() const Q_DECL_OVERRIDE {
     return &SimpleSampledBeziergonShader::type;
     };
-    virtual QSGMaterialShader *createShader() const Q_DECL_OVERRIDE {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    virtual QSGMaterialShader *createShader(QSGRendererInterface::RenderMode renderMode) const override
+#else
+    virtual QSGMaterialShader *createShader() const override
+#endif
+    {
         return new SimpleSampledBeziergonShader();
     };
 };

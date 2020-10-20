@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2020 LG Electronics, Inc.
+// Copyright (c) 2018-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -84,6 +84,32 @@ void TabletItem::setValues(QTabletEvent *event)
     m_pressure = event->pressure();
     m_uniqueId = event->uniqueId();
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    switch (event->deviceType()) {
+    case QInputDevice::DeviceType::Mouse:
+        m_device = "Mouse";
+        break;
+    case QInputDevice::DeviceType::TouchScreen:
+        m_device = "TouchScreen";
+        break;
+    case QInputDevice::DeviceType::TouchPad:
+        m_device = "TouchPad";
+        break;
+    case QInputDevice::DeviceType::Puck:
+        m_device = "Puck";
+        break;
+    case QInputDevice::DeviceType::Stylus:
+        m_device = "Stylus";
+        break;
+    case QInputDevice::DeviceType::Airbrush:
+        m_device = "Airbrush";
+        break;
+    case QInputDevice::DeviceType::Keyboard:
+        m_device = "Keyboard";
+        break;
+    case QInputDevice::DeviceType::Unknown:
+        [[fallthrough]];
+#else
     switch (event->device()) {
     case QTabletEvent::NoDevice:
         m_device = "NoDevice";
@@ -106,11 +132,26 @@ void TabletItem::setValues(QTabletEvent *event)
     case QTabletEvent::RotationStylus:
         m_device = "RotationStylus";
         break;
+#endif
     default:
         m_device = "Unknown";
+        break;
     }
 
     switch (event->pointerType()) {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    case QPointingDevice::PointerType::Pen:
+        m_type = "Pen";
+        break;
+    case QPointingDevice::PointerType::Cursor:
+        m_type = "Cursor";
+        break;
+    case QPointingDevice::PointerType::Eraser:
+        m_type = "Eraser";
+        break;
+    case QPointingDevice::PointerType::Unknown:
+        [[fallthrough]];
+#else
     case QTabletEvent::Pen:
         m_type = "Pen";
         break;
@@ -124,6 +165,7 @@ void TabletItem::setValues(QTabletEvent *event)
             m_type = "Pen Eraser";
         break;
     case QTabletEvent::UnknownPointer:
+#endif
     default:
         m_type = "Unknown";
         break;

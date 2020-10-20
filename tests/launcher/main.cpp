@@ -63,11 +63,16 @@ int main(int argc, char *argv[])
     runner->setEnvironment(validateEnvironment(QProcess::systemEnvironment()));
     runner->setProcessChannelMode(QProcess::ForwardedChannels);
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    QObject::connect(runner, &QProcess::finished, &a, &QCoreApplication::quit);
+    QObject::connect(runner, &QProcess::errorOccurred, &a, &QCoreApplication::quit);
+#else
     void (QProcess:: *finished) (int, QProcess::ExitStatus) = &QProcess::finished;
     void (QProcess:: * error) (QProcess::ProcessError) = &QProcess::error;
 
     QObject::connect(runner, finished, &a, &QCoreApplication::quit);
     QObject::connect(runner, error, &a, &QCoreApplication::quit);
+#endif
 
     QStringList arglist;
     //AppId and main qml can be passed in a json object.
