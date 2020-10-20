@@ -192,9 +192,9 @@ Q_SIGNALS:
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);
-    void mouseMoveEvent(QMouseEvent *ev);
     bool event(QEvent *ev);
     bool translateTabletToMouse(QTabletEvent* event, QQuickItem* item);
+    void mouseMoveEvent(QMouseEvent *ev);
 
 private:
     QQmlPropertyMap m_windowProperties;
