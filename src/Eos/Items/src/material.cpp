@@ -26,15 +26,54 @@
 
 namespace SamplerGeometry {
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+bool SolidShader::updateUniformData(QSGMaterialShader::RenderState &state,
+                       QSGMaterial *newMaterial, QSGMaterial *oldMaterial)
+{
+    //updateSampledImage called after updateUniformData, so we have to get texture size here
+    SolidMaterial* mat = static_cast<SolidMaterial*>(newMaterial);
+    if (QSGTextureProvider* tp = mat->textureProvider()) {
+        QSGTexture *texture = tp->texture();
+        if (texture) {
+            QRectF r = texture->normalizedTextureSubRect();
+            mat->m_baseUniforms.sourceSubRect = QVector4D(r.x(), r.y(), r.width(), r.height() );
+        }
+    }
+
+    UniformWriter uw(state, newMaterial, oldMaterial);
+    uw.write(state.combinedMatrix()); // update qt_Matrix
+    uw.write(state.opacity()); // update qt_Opacity
+    updateUniformBlock(uw);
+    return true;
+}
+
+void SolidShader::updateSampledImage(QSGMaterialShader::RenderState &state,
+                        int binding, QSGTexture **ppTexture, QSGMaterial *newMaterial, QSGMaterial *oldMaterial)
+{
+    SampledMaterial* mat = static_cast<SampledMaterial*>(newMaterial);
+    QSGTextureProvider* tp = mat->textureProvider();
+    if (tp) {
+        QSGTexture *texture = tp->texture();
+        *ppTexture = texture;
+        if (texture) {
+            // should be fine for the non-clamp case as it is clamped in the shader
+            texture->setVerticalWrapMode(QSGTexture::ClampToEdge);
+            texture->setHorizontalWrapMode(QSGTexture::ClampToEdge);
+            QRectF r = texture->normalizedTextureSubRect();
+            mat->m_baseUniforms.sourceSubRect = QVector4D(r.x(), r.y(), r.width(), r.height() );
+        } else {
+            qDebug()<<"NO texture from provider!";
+        }
+    } else {
+        qDebug()<<"NO textureProvider!";
+    }
+}
+#else
 QSGMaterialType SolidShader::type;
 QSGMaterialType SampledShader::type;
 QSGMaterialType SimpleSampledShader::type;
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-SolidShader::SolidShader(): QSGMaterialShader(*new QSGMaterialShaderPrivate(this))
-#else
 SolidShader::SolidShader(): QSGMaterialShader(*new QSGMaterialShaderPrivate)
-#endif
 {
     setShaderSourceFile(QOpenGLShader::Vertex, QStringLiteral(":parallelogram.vert"));
     setShaderSourceFile(QOpenGLShader::Fragment, QStringLiteral(":solid.frag"));
@@ -56,7 +95,7 @@ void SolidShader::updateState(const RenderState &state, QSGMaterial *newMaterial
                 c.alphaF());
 
     program()->setUniformValue(id_color, v);
-};
+}
 
 const char* SolidShader::attribs[] = {"vertex", "texture0", "coverage", nullptr};
 char const *const * SolidShader::attributeNames() const {
@@ -72,17 +111,61 @@ void SolidShader::initialize()  {
     Q_ASSERT(id_opacity != -1);
     Q_ASSERT(id_color != -1);
 }
+#endif
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-SampledShader::SampledShader(): QSGMaterialShader(*new QSGMaterialShaderPrivate(this))
+QSGMaterialType SolidShader::type;
+QSGMaterialType SampledShader::type;
+QSGMaterialType SimpleSampledShader::type;
+
+SolidShader::SolidShader()
+{
+    setShaderFileName(VertexStage, QStringLiteral(":parallelogram.vert"));
+    setShaderFileName(FragmentStage, QStringLiteral(":solid.frag"));
+}
+
+void SolidShader::updateUniformBlock(UniformWriter &uniformWriter)
+{
+    SolidMaterial* mat = static_cast<SolidMaterial*>(uniformWriter.newMaterial);
+    const QColor& c = mat->m_color;
+    mat->m_baseUniforms.color = QVector4D(c.redF() * c.alphaF(),
+                c.greenF() * c.alphaF(),
+                c.blueF() * c.alphaF(),
+                c.alphaF());
+
+    uniformWriter.write(mat->m_baseUniforms.color);
+    uniformWriter.write(mat->m_baseUniforms.xScale);
+    uniformWriter.write(mat->m_baseUniforms.yScale);
+    uniformWriter.write(mat->m_baseUniforms.dest);
+    uniformWriter.write(mat->m_baseUniforms.sourceSubRect);
+    uniformWriter.write(mat->m_baseUniforms.rotation);
+}
+
+SampledShader::SampledShader()
+{
+
+    setShaderFileName(VertexStage, QStringLiteral(":parallelogram.vert"));
+    setShaderFileName(FragmentStage,
+                      qEnvironmentVariableIsSet("QWF_DEBUG_SHADERS")?
+                          QStringLiteral(":sampler-dest-debug.frag"):
+                          QStringLiteral(":sampler-dest.frag"));
+}
+
+void SampledShader::updateUniformBlock(UniformWriter &uniformWriter)
+{
+    SampledMaterial* mat = static_cast<SampledMaterial*>(uniformWriter.newMaterial);
+    mat->m_baseUniforms.dest = QVector4D(mat->m_dest.x(),mat->m_dest.y(), mat->m_dest.width(), mat->m_dest.height());
+    mat->m_baseUniforms.rotation = mat->m_rotation;
+    mat->m_baseUniforms.xScale = mat->m_xScale;
+    mat->m_baseUniforms.yScale = mat->m_yScale;
+    SolidShader::updateUniformBlock(uniformWriter);
+}
 #else
 SampledShader::SampledShader(): QSGMaterialShader(*new QSGMaterialShaderPrivate)
-#endif
 {
     setShaderSourceFile(QOpenGLShader::Vertex, QStringLiteral(":parallelogram.vert"));
     QStringList frag;
-    if(qEnvironmentVariableIsSet("QWF_DEBUG_SHADERS")) frag << QStringLiteral(":debug.frag");
-    frag << QStringLiteral(":sampler-dest.frag");
+    frag << (qEnvironmentVariableIsSet("QWF_DEBUG_SHADERS") ? QStringLiteral(":sampler-dest-debug.frag") : QStringLiteral(":sampler-dest.frag"));
     setShaderSourceFiles(QOpenGLShader::Fragment, frag);
 }
 
@@ -137,6 +220,7 @@ void SampledShader::initialize()  {
     Q_ASSERT(id_xScale != -1);
     Q_ASSERT(id_yScale != -1);
 }
+#endif
 
 SolidMaterial::SolidMaterial() {
 }
@@ -188,17 +272,23 @@ QSGMaterialShader *SampledMaterial::createShader() const
 }
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-SimpleSampledShader::SimpleSampledShader(): QSGMaterialShader(*new QSGMaterialShaderPrivate(this))
+SimpleSampledShader::SimpleSampledShader()
+{
+    setShaderFileName(VertexStage, QStringLiteral(":parallelogram.vert"));
+    setShaderFileName(FragmentStage,
+                      qEnvironmentVariableIsSet("QWF_DEBUG_SHADERS")?
+                          QStringLiteral(":sampler-debug.frag"):
+                          QStringLiteral(":sampler.frag"));
+}
 #else
 SimpleSampledShader::SimpleSampledShader(): QSGMaterialShader(*new QSGMaterialShaderPrivate)
-#endif
 {
     setShaderSourceFile(QOpenGLShader::Vertex, QStringLiteral(":parallelogram.vert"));
     QStringList frag;
-    if(qEnvironmentVariableIsSet("QWF_DEBUG_SHADERS")) frag << QStringLiteral(":debug.frag");
-    frag << QStringLiteral(":sampler.frag");
+    frag << (qEnvironmentVariableIsSet("QWF_DEBUG_SHADERS") ? QStringLiteral(":sampler-debug.frag") : QStringLiteral(":sampler.frag"));
     setShaderSourceFiles(QOpenGLShader::Fragment, frag);
 }
+#endif
 
 SimpleSampledMaterial::SimpleSampledMaterial()
         : SampledMaterial() {

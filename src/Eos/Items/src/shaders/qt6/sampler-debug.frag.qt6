@@ -1,4 +1,5 @@
-// Copyright (c) 2014-2018 LG Electronics, Inc.
+#version 440
+// Copyright (c) 2014-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,16 +15,26 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-uniform lowp vec4 color;
-uniform sampler2D source;
-varying highp vec2 qt_TexCoord0;
-uniform mediump vec4 sourceSubRect;
-uniform lowp float qt_Opacity;
-varying lowp float vcoverage;
+precision highp float;
 
-uniform lowp int rotation;
-uniform lowp float xScale;
-uniform lowp float yScale;
+layout(binding = 1) uniform sampler2D source;
+
+layout(location = 0) out vec4 fragmentColor;
+
+layout(location = 0) in highp vec2 qt_TexCoord0;
+layout(location = 2) in highp float vcoverage;
+
+layout(std140, binding = 0) uniform buf
+{
+    mat4 qt_Matrix;
+    float qt_Opacity;
+    vec4 color;
+    float xScale;
+    float yScale;
+    vec4 dest;
+    vec4 sourceSubRect;
+    int rotation;
+};
 
 void main() {
     highp float prevCoordX;
@@ -52,22 +63,11 @@ void main() {
     if (newCoordX < 0.0 || newCoordX > 1.0 || newCoordY < 0.0 || newCoordY > 1.0)
         texel = color;
     else
-        texel = texture2D(source, vec2(newCoordX , newCoordY));
+        texel = texture(source, vec2(newCoordX , newCoordY));
 
     lowp vec4 sourceColor = texel + vec4(1.0 - texel.a) * color;
 
-     // imagination docs say these additions are optimized out
-     // since they are on uniforms
-     if (qt_TexCoord0.x < sourceSubRect.x
-     || qt_TexCoord0.y < sourceSubRect.y
-     || qt_TexCoord0.x > sourceSubRect.x + sourceSubRect.z
-     || qt_TexCoord0.y > sourceSubRect.y + sourceSubRect.w) {
-        sourceColor = color;
-    }
+    sourceColor.rb *= vec2(0.1);
 
-#ifdef DEBUG
-    sourceColor.gb *= vec2(0.1);
-#endif
-
-    gl_FragColor = sourceColor * qt_Opacity * vcoverage;
+    fragmentColor = sourceColor * qt_Opacity * vcoverage;
 }

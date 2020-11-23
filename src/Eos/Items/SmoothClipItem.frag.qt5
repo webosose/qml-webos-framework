@@ -14,20 +14,13 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-import QtQuick 2.4
+uniform lowp sampler2D image;
+uniform lowp sampler2D masked;
+uniform highp float qt_Opacity;
+varying highp vec2 qt_TexCoord0;
 
-ShaderEffect {
-    property real elideStart
-    property real elideEnd
-    property real elideLeftStart
-    property real elideLeftEnd
-
-    property real _unitsPerPixel: width > 0 ? 1 / width : 0
-
-    property real _start: elideStart * _unitsPerPixel
-    property real _end: elideEnd * _unitsPerPixel
-    property real _leftStart: elideLeftStart * _unitsPerPixel
-    property real _leftEnd: elideLeftEnd * _unitsPerPixel
-
-    fragmentShader: Qt.resolvedUrl("ElideShader.frag")
+void main() {
+    highp vec4 texColor = texture2D(image, qt_TexCoord0.xy);
+    highp vec4 maskedColor = texture2D(masked, qt_TexCoord0.xy);
+    gl_FragColor = texColor * maskedColor;
 }

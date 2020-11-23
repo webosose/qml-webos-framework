@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2018 LG Electronics, Inc.
+// Copyright (c) 2013-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -135,22 +135,7 @@ Item {
 
                     enabled: root.blur > 0;
 
-                    fragmentShader: "
-                        varying highp vec2 qt_TexCoord0;
-                        uniform highp vec4 color;
-                        uniform highp float qt_Opacity;
-                        uniform highp float blur;
-                        void main(void) {
-                            highp float blurR = 1.0 - blur;
-                            highp float x = qt_TexCoord0.x;
-                            if (x >= 0.0 && x <= blur) {
-                                gl_FragColor = color * smoothstep(0.0, blur, x) * qt_Opacity;
-                            } else if (x >= blurR && x <= 1.0) {
-                                gl_FragColor = color * (1.0 - smoothstep(blurR, 1.0, x)) * qt_Opacity;
-                            } else {
-                                gl_FragColor = color * qt_Opacity;
-                            }
-                        }"
+                    fragmentShader: Qt.resolvedUrl("Parallelogram.frag")
                 }
 
                 Item {

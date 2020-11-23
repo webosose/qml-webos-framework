@@ -1,4 +1,4 @@
-# Copyright (c) 2014-2018 LG Electronics, Inc.
+# Copyright (c) 2014-2021 LG Electronics, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,10 +21,16 @@ CONFIG += qt plugin c++11
 
 TARGET = $$qtLibraryTarget($$TARGET)
 uri = Eos.Items
+include($$PWD/../shader.pri)
 
 SOURCES += $$files(src/*.cpp)
 HEADERS += $$files(src/*.h)
-RESOURCES = src/beziergon.qrc
+versionAtLeast(QT_VERSION, 6.0.0) {
+    system($$PWD/../shaderconversion.sh 6 \"$$PWD/src/shaders/qt6/\" \"$$PWD/src/shaders/qt6/\")
+    RESOURCES = src/shaders/qt6/beziergon.qrc
+} else {
+    RESOURCES = src/shaders/qt5/beziergon.qrc
+}
 
 libvt {
     LIBS += -lvt
@@ -50,7 +56,7 @@ OTHER_FILES += QML_FILES
 target.path = $$instbase/$$replace(uri, \\., /)
 
 component.base = $$_PRO_FILE_PWD_
-component.files = $$QML_FILES
+component.files = $$QML_FILES $$SHADER_FILES
 component.path = $$instbase/$$replace(uri, \\., /)
 
 INSTALLS += target component

@@ -1,4 +1,5 @@
-// Copyright (c) 2014-2018 LG Electronics, Inc.
+#version 440
+// Copyright (c) 2014-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,43 +15,50 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-attribute highp vec4 vertex;
-attribute highp vec2 texture0;
-attribute highp float coverage;
+layout(location = 0) in vec4 vertex;
+layout(location = 1) in vec2 texture0;
+layout(location = 2) in float coverage;
 
-uniform highp mat4 qt_Matrix;
+layout(location = 0) out vec2 qt_TexCoord0;
+layout(location = 1) out vec2 qt_TexCoord1;
+layout(location = 2) out float vcoverage;
 
-varying highp vec2 qt_TexCoord0;
-varying highp vec2 qt_TexCoord1;
-varying lowp float vcoverage;
+layout(std140, binding = 0) uniform buf
+{
+    mat4 qt_Matrix;
+    float qt_Opacity;
+    vec4 color;
+    float xScale;
+    float yScale;
+    vec4 dest;
+    vec4 sourceSubRect;
+    int rotation;
 
-// control points for top edge
-uniform highp vec2 controlTopLeft;
-uniform highp vec2 controlTopRight;
+    // corner points
+    vec2 topLeft;
+    vec2 topRight;
+    vec2 bottomLeft;
+    vec2 bottomRight;
 
-// control points for bottom edge
-uniform highp vec2 controlBottomLeft;
-uniform highp vec2 controlBottomRight;
+    // control points for top edge
+    vec2 controlTopLeft;
+    vec2 controlTopRight;
 
-// control points for left edge
-uniform highp vec2 controlLeftTop;
-uniform highp vec2 controlLeftBottom;
+    // control points for bottom edge
+    vec2 controlBottomLeft;
+    vec2 controlBottomRight;
 
-// control points for right edge
-uniform highp vec2 controlRightTop;
-uniform highp vec2 controlRightBottom;
+    // control points for left edge
+    vec2 controlLeftTop;
+    vec2 controlLeftBottom;
 
-// corner points
-uniform highp vec2 topLeft;
-uniform highp vec2 topRight;
-uniform highp vec2 bottomLeft;
-uniform highp vec2 bottomRight;
+    // control points for right edge
+    vec2 controlRightTop;
+    vec2 controlRightBottom;
+};
 
-uniform highp vec4 dest;
-uniform mediump vec4 sourceSubRect;
 
 void main() {
-
     //cubic de casteljau along top edge
     highp vec2 topP00 = mix(topLeft, controlTopLeft, vertex.x);
     highp vec2 topP01 = mix(controlTopLeft, controlTopRight, vertex.x);

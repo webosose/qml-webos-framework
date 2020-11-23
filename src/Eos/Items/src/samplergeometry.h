@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2020 LG Electronics, Inc.
+// Copyright (c) 2014-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -71,7 +71,7 @@ protected slots:
     void markDirtyGeometry() { m_geometryDirty = true; update(); }
 
 protected:
-    void itemChange(ItemChange change, const ItemChangeData &value) Q_DECL_OVERRIDE;
+    void itemChange(ItemChange change, const ItemChangeData &value) override;
 
     virtual SolidMaterial* createSolidMaterial() = 0;
     virtual SampledMaterial* createSampledMaterial() = 0;
@@ -81,7 +81,7 @@ protected:
 
     virtual QSGGeometry* generateFringeGeometry(QSGGeometry* old) = 0;
     virtual QSGGeometry* generateBodyGeometry(QSGGeometry* old) = 0;
-    QSGNode* updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *) Q_DECL_FINAL Q_DECL_OVERRIDE;
+    QSGNode* updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *) Q_DECL_FINAL override;
 
     QColor m_color;
     bool m_blending;
@@ -131,7 +131,7 @@ class GeometryNode
 public:
     GeometryNode();
     virtual ~GeometryNode();
-    virtual void preprocess() Q_DECL_OVERRIDE;
+    virtual void preprocess() override;
     bool sampling() const;
     void setSolidMaterial(SolidMaterial* mat);
     void setSampledMaterial(SampledMaterial* mat);

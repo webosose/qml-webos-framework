@@ -1,3 +1,4 @@
+#version 310 es
 // Copyright (c) 2013-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,20 +15,22 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-import QtQuick 2.4
+precision highp float;
 
-ShaderEffect {
-    property real elideStart
-    property real elideEnd
-    property real elideLeftStart
-    property real elideLeftEnd
+layout(location = 0) out vec4 fragmentColor;
+layout(location = 0) in vec2 qt_TexCoord0;
 
-    property real _unitsPerPixel: width > 0 ? 1 / width : 0
+layout(binding = 1) uniform sampler2D image;
+layout(binding = 2) uniform sampler2D masked;
 
-    property real _start: elideStart * _unitsPerPixel
-    property real _end: elideEnd * _unitsPerPixel
-    property real _leftStart: elideLeftStart * _unitsPerPixel
-    property real _leftEnd: elideLeftEnd * _unitsPerPixel
+layout(std140, binding = 0) uniform buf
+{
+    mat4 qt_Matrix;
+    float qt_Opacity;
+};
 
-    fragmentShader: Qt.resolvedUrl("ElideShader.frag")
+void main() {
+    highp vec4 texColor = texture(image, qt_TexCoord0.xy);
+    highp vec4 maskedColor = texture(masked, qt_TexCoord0.xy);
+    fragmentColor = texColor * maskedColor;
 }

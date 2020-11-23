@@ -1,0 +1,94 @@
+#version 440
+// Copyright (c) 2014-2021 LG Electronics, Inc.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// SPDX-License-Identifier: Apache-2.0
+
+precision highp float;
+
+layout(binding = 1) uniform sampler2D source;
+
+layout(location = 0) out vec4 fragmentColor;
+
+layout(location = 0) in highp vec2 qt_TexCoord0;
+layout(location = 1) in highp vec2 qt_TexCoord1;
+layout(location = 2) in highp float vcoverage;
+
+layout(std140, binding = 0) uniform buf
+{
+    mat4 qt_Matrix;
+    float qt_Opacity;
+    vec4 color;
+    float xScale;
+    float yScale;
+    vec4 dest;
+    vec4 sourceSubRect;
+    int rotation;
+
+    // corner points
+    vec2 topLeft;
+    vec2 topRight;
+    vec2 bottomLeft;
+    vec2 bottomRight;
+
+    // control points for top edge
+    vec2 controlTopLeft;
+    vec2 controlTopRight;
+
+    // control points for bottom edge
+    vec2 controlBottomLeft;
+    vec2 controlBottomRight;
+
+    // control points for left edge
+    vec2 controlLeftTop;
+    vec2 controlLeftBottom;
+
+    // control points for right edge
+    vec2 controlRightTop;
+    vec2 controlRightBottom;
+};
+
+void main() {
+    highp float prevCoordX;
+    highp float prevCoordY;
+    highp float newCoordX;
+    highp float newCoordY;
+    lowp vec4 texel;
+
+    if (rotation == 90) {
+        prevCoordX = qt_TexCoord0.y;
+        prevCoordY = 1.0 - qt_TexCoord0.x;
+    } else if (rotation == 180) {
+        prevCoordX = 1.0 - qt_TexCoord0.x;
+        prevCoordY = 1.0 - qt_TexCoord0.y;
+    } else if (rotation == 270) {
+        prevCoordX = 1.0 - qt_TexCoord0.y;
+        prevCoordY = qt_TexCoord0.x;
+    } else {
+        prevCoordX = qt_TexCoord0.x;
+        prevCoordY = qt_TexCoord0.y;
+    }
+
+    newCoordX = (prevCoordX) * xScale  + (1.0 - xScale) / 2.0;
+    newCoordY = (prevCoordY) * yScale  + (1.0 - yScale) / 2.0;
+
+    if (newCoordX < 0.0 || newCoordX > 1.0 || newCoordY < 0.0 || newCoordY > 1.0)
+        texel = color;
+    else
+        texel = texture(source, vec2(newCoordX , newCoordY));
+
+    lowp vec4 sourceColor = texel + vec4(1.0 - texel.a) * color;
+
+    fragmentColor = sourceColor * qt_Opacity * vcoverage;
+}

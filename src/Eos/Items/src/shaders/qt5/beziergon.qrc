@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>parallelogram.vert</file>
+        <file>bezier.vert</file>
+        <file>sampler-dest.frag</file>
+        <file>sampler-dest-debug.frag</file>
+        <file>sampler.frag</file>
+        <file>sampler-debug.frag</file>
+        <file>solid.frag</file>
+    </qresource>
+</RCC>

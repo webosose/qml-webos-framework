@@ -1,4 +1,4 @@
-# Copyright (c) 2014-2021 LG Electronics, Inc.
+# Copyright (c) 2021 LG Electronics, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,25 +14,10 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-TEMPLATE = aux
-
-uri = Eos.Controls
-include($$PWD/../shader.pri)
-
-QML_FILES = \
-    qmldir \
-    SkullCloseButton \
-    $$files(*.qml) \
-    $$files(*.js)
-
-!defined(WEBOS_INSTALL_QML, var) {
-    instbase = $$[QT_INSTALL_QML]
+versionAtLeast(QT_VERSION, 6.0.0) {
+    FILES = $$system($$PWD/shaderconversion.sh 6 \"$$_PRO_FILE_PWD_\" \"$$shadowed($$_PRO_FILE_PWD_)\")
 } else {
-    instbase = $$WEBOS_INSTALL_QML
+    FILES = $$system($$PWD/shaderconversion.sh 5 \"$$_PRO_FILE_PWD_\" \"$$shadowed($$_PRO_FILE_PWD_)\")
 }
 
-controls.base = $$_PRO_FILE_PWD_
-controls.files = $$QML_FILES $$SHADER_FILES
-controls.path = $$instbase/$$replace(uri, \\., /)
-
-INSTALLS += controls
+SHADER_FILES = $$FILES

@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018 LG Electronics, Inc.
+// Copyright (c) 2014-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,15 +14,20 @@
 //
 // SPDX-License-Identifier: Apache-2.0
 
-uniform lowp vec4 color;
-uniform highp float feather;
-uniform highp vec2 destSize;
+attribute highp vec4 vertex;
+attribute highp vec2 texture0;
+attribute highp float coverage;
+
+uniform highp mat4 qt_Matrix;
+uniform highp vec4 dest;
+uniform mediump vec4 sourceSubRect;
+
 varying highp vec2 qt_TexCoord0;
 varying highp vec2 qt_TexCoord1;
-uniform highp vec2 boundingBox;
-uniform lowp float qt_Opacity;
 varying lowp float vcoverage;
 
 void main() {
-    gl_FragColor = color * qt_Opacity * vcoverage;
+    gl_Position = qt_Matrix * vertex;
+    qt_TexCoord0 = sourceSubRect.xy + sourceSubRect.zw * ((vertex.xy - dest.xy) / dest.zw);
+    vcoverage = coverage;
 }

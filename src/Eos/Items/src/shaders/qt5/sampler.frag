@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018 LG Electronics, Inc.
+// Copyright (c) 2014-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -55,10 +55,6 @@ void main() {
         texel = texture2D(source, vec2(newCoordX , newCoordY));
 
     lowp vec4 sourceColor = texel + vec4(1.0 - texel.a) * color;
-
-#ifdef DEBUG
-    sourceColor.rb *= vec2(0.1);
-#endif
 
     gl_FragColor = sourceColor * qt_Opacity * vcoverage;
 }

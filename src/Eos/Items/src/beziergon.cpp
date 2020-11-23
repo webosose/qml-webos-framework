@@ -32,7 +32,7 @@ class SolidBeziergonMaterial
     , public SolidMaterial
 {
 public:
-    virtual QSGMaterialType *type() const Q_DECL_OVERRIDE {
+    virtual QSGMaterialType *type() const override {
         return &SolidBeziergonShader::type;
     };
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
@@ -50,7 +50,7 @@ class SampledBeziergonMaterial
     , public SampledMaterial
 {
 public:
-    virtual QSGMaterialType *type() const Q_DECL_OVERRIDE {
+    virtual QSGMaterialType *type() const override {
     return &SampledBeziergonShader::type;
     };
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
@@ -68,7 +68,7 @@ class SimpleSampledBeziergonMaterial
     , public SimpleSampledMaterial
 {
 public:
-    virtual QSGMaterialType *type() const Q_DECL_OVERRIDE {
+    virtual QSGMaterialType *type() const override {
     return &SimpleSampledBeziergonShader::type;
     };
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
@@ -81,8 +81,42 @@ public:
     };
 };
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+void BeziergonShaderAspect::updateState(UniformWriter &uniformWriter, BeziergonState *state) {
+    uniformWriter.write(state->m_topLeft);
+    uniformWriter.write(state->m_topRight);
+    uniformWriter.write(state->m_bottomLeft);
+    uniformWriter.write(state->m_bottomRight);
+    uniformWriter.write(state->m_controlTopLeft);
+    uniformWriter.write(state->m_controlTopRight);
+    uniformWriter.write(state->m_controlBottomLeft);
+    uniformWriter.write(state->m_controlBottomRight);
+    uniformWriter.write(state->m_controlLeftTop);
+    uniformWriter.write(state->m_controlLeftBottom);
+    uniformWriter.write(state->m_controlRightTop);
+    uniformWriter.write(state->m_controlRightBottom);
+}
 
+SolidBeziergonShader::SolidBeziergonShader() {
+    setShaderFileName(VertexStage, QStringLiteral(":bezier.vert"));
+    // fragment shader from parent constructor
+}
 
+void SolidBeziergonShader::updateUniformBlock(UniformWriter &uniformWriter) {
+    SolidShader::updateUniformBlock(uniformWriter);
+    BeziergonShaderAspect::updateState(uniformWriter, static_cast<SolidBeziergonMaterial*>(uniformWriter.newMaterial));
+}
+
+SampledBeziergonShader::SampledBeziergonShader() {
+    setShaderFileName(VertexStage, QStringLiteral(":bezier.vert"));
+    // fragment shader from parent constructor
+}
+
+void SampledBeziergonShader::updateUniformBlock(UniformWriter &uniformWriter) {
+    SampledShader::updateUniformBlock(uniformWriter);
+    BeziergonShaderAspect::updateState(uniformWriter, static_cast<SampledBeziergonMaterial*>(uniformWriter.newMaterial));
+}
+#else
 void BeziergonShaderAspect::updateState(QOpenGLShaderProgram* program, BeziergonState *state) {
     program->setUniformValue(id_topLeft, state->m_topLeft);
     program->setUniformValue(id_topRight, state->m_topRight);
@@ -128,9 +162,9 @@ void BeziergonShaderAspect::initialize(QOpenGLShaderProgram* program) {
 }
 
 SolidBeziergonShader::SolidBeziergonShader() {
-        setShaderSourceFile(QOpenGLShader::Vertex, QStringLiteral(":bezier.vert"));
-        // fragment shader from parent constructor
-    }
+    setShaderSourceFile(QOpenGLShader::Vertex, QStringLiteral(":bezier.vert"));
+    // fragment shader from parent constructor
+}
 
 void SolidBeziergonShader::updateState(const RenderState &state, QSGMaterial *newMaterial, QSGMaterial *oldMaterial) {
     SolidShader::updateState(state, newMaterial, oldMaterial);
@@ -143,9 +177,9 @@ void SolidBeziergonShader::initialize() {
 }
 
 SampledBeziergonShader::SampledBeziergonShader() {
-        setShaderSourceFile(QOpenGLShader::Vertex, QStringLiteral(":bezier.vert"));
-        // fragment shader from parent constructor
-    }
+    setShaderSourceFile(QOpenGLShader::Vertex, QStringLiteral(":bezier.vert"));
+    // fragment shader from parent constructor
+}
 
 void SampledBeziergonShader::updateState(const RenderState &state, QSGMaterial *newMaterial, QSGMaterial *oldMaterial) {
     SampledShader::updateState(state, newMaterial, oldMaterial);
@@ -156,16 +190,27 @@ void SampledBeziergonShader::initialize() {
     SampledShader::initialize();
     BeziergonShaderAspect::initialize(program());
 }
+#endif
 
 /*
  * faster shader
  */
 
 SimpleSampledBeziergonShader::SimpleSampledBeziergonShader() {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    setShaderFileName(VertexStage, QStringLiteral(":bezier.vert"));
+#else
     setShaderSourceFile(QOpenGLShader::Vertex, QStringLiteral(":bezier.vert"));
+#endif
     // fragment shader from parent constructor
 }
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+void SimpleSampledBeziergonShader::updateUniformBlock(UniformWriter &uniformWriter) {
+    SimpleSampledShader::updateUniformBlock(uniformWriter);
+    BeziergonShaderAspect::updateState(uniformWriter, static_cast<SampledBeziergonMaterial*>(uniformWriter.newMaterial));
+}
+#else
 void SimpleSampledBeziergonShader::updateState(const RenderState &state, QSGMaterial *newMaterial, QSGMaterial *oldMaterial) {
     SimpleSampledShader::updateState(state, newMaterial, oldMaterial);
     BeziergonShaderAspect::updateState(program(), static_cast<SampledBeziergonMaterial*>(newMaterial));
@@ -175,6 +220,7 @@ void SimpleSampledBeziergonShader::initialize() {
     SimpleSampledShader::initialize();
     BeziergonShaderAspect::initialize(program());
 }
+#endif
 
 Beziergon::Beziergon(QQuickItem *parent)
     : Item(parent)

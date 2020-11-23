@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2018 LG Electronics, Inc.
+// Copyright (c) 2013-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -39,16 +39,6 @@ Item {
             hideSource: true
         }
 
-        fragmentShader: "
-            uniform lowp sampler2D image;
-            uniform lowp sampler2D masked;
-            uniform highp float qt_Opacity;
-            varying highp vec2 qt_TexCoord0;
-            void main() {
-                highp vec4 texColor = texture2D(image, qt_TexCoord0.xy);
-                highp vec4 maskedColor = texture2D(masked, qt_TexCoord0.xy);
-                gl_FragColor = texColor * maskedColor;
-            }
-        "
+        fragmentShader: Qt.resolvedUrl("SmoothClipItem.frag")
     }
 }

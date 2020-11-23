@@ -94,14 +94,14 @@ public:
     void setControlRightBottom(const QPointF& p);
 
 protected:
-    SolidMaterial* createSolidMaterial() Q_DECL_OVERRIDE;
-    SampledMaterial* createSampledMaterial() Q_DECL_OVERRIDE;
-    void updateSolidMaterial(GeometryNode* node) Q_DECL_OVERRIDE;
-    void updateSampledMaterial(GeometryNode* node) Q_DECL_OVERRIDE;
+    SolidMaterial* createSolidMaterial() override;
+    SampledMaterial* createSampledMaterial() override;
+    void updateSolidMaterial(GeometryNode* node) override;
+    void updateSampledMaterial(GeometryNode* node) override;
     void updateBeziergonState(BeziergonState* state);
 
-    QSGGeometry* generateBodyGeometry(QSGGeometry* old) Q_DECL_OVERRIDE;
-    QSGGeometry* generateFringeGeometry(QSGGeometry* old) Q_DECL_OVERRIDE;
+    QSGGeometry* generateBodyGeometry(QSGGeometry* old) override;
+    QSGGeometry* generateFringeGeometry(QSGGeometry* old) override;
 public slots:
     void calculateTopLeft();
     void calculateTopRight();
@@ -146,6 +146,9 @@ private:
 
 class BeziergonShaderAspect {
 public:
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    void updateState(UniformWriter &uniformWriter, BeziergonState *state);
+#else
     void updateState(QOpenGLShaderProgram* program, BeziergonState *state);
     void initialize(QOpenGLShaderProgram* program);
 
@@ -153,6 +156,7 @@ private:
     int id_topLeft, id_topRight, id_bottomLeft, id_bottomRight;
     int id_controlTopLeft, id_controlTopRight, id_controlBottomLeft, id_controlBottomRight;
     int id_controlLeftTop, id_controlLeftBottom, id_controlRightTop, id_controlRightBottom;
+#endif
 };
 
 
@@ -163,9 +167,12 @@ class SolidBeziergonShader
     friend class SolidBeziergonMaterial;
     public:
     SolidBeziergonShader();
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    virtual void updateUniformBlock(UniformWriter &uniformWriter) override;
+#else
     void updateState(const RenderState &state, QSGMaterial *newMaterial, QSGMaterial *oldMaterial);
-    void initialize() Q_DECL_OVERRIDE;
-
+    void initialize() override;
+#endif
 private:
     static QSGMaterialType type;
 };
@@ -177,10 +184,13 @@ class SampledBeziergonShader
     friend class SampledBeziergonMaterial;
 public:
     SampledBeziergonShader();
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    virtual void updateUniformBlock(UniformWriter &uniformWriter) override;
+#else
+    void updateState(const RenderState &state, QSGMaterial *newMaterial, QSGMaterial *oldMaterial) override;
 
-    void updateState(const RenderState &state, QSGMaterial *newMaterial, QSGMaterial *oldMaterial) Q_DECL_OVERRIDE;
-
-    void initialize() Q_DECL_OVERRIDE;
+    void initialize() override;
+#endif
 private:
     static QSGMaterialType type;
 };
@@ -192,10 +202,13 @@ class SimpleSampledBeziergonShader
     friend class SimpleSampledBeziergonMaterial;
 public:
     SimpleSampledBeziergonShader();
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    virtual void updateUniformBlock(UniformWriter &uniformWriter) override;
+#else
+    void updateState(const RenderState &state, QSGMaterial *newMaterial, QSGMaterial *oldMaterial) override;
 
-    void updateState(const RenderState &state, QSGMaterial *newMaterial, QSGMaterial *oldMaterial) Q_DECL_OVERRIDE;
-
-    void initialize() Q_DECL_OVERRIDE;
+    void initialize() override;
+#endif
 private:
     static QSGMaterialType type;
 };
