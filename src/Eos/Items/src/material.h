@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2020 LG Electronics, Inc.
+// Copyright (c) 2015-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,9 +32,9 @@ public:
 
     char const *const *attributeNames() const Q_DECL_OVERRIDE;
     void initialize() Q_DECL_OVERRIDE;
-    int id_color;
-    int id_matrix;
-    int id_opacity;
+    int id_color = 0;
+    int id_matrix = 0;
+    int id_opacity = 0;
     static QSGMaterialType type;
     static const char* attribs[];
 };
@@ -44,12 +44,12 @@ public:
     SampledShader();
     void updateState(const RenderState &state, QSGMaterial *newMaterial, QSGMaterial *oldMaterial) Q_DECL_OVERRIDE;
     void initialize() Q_DECL_OVERRIDE;
-    int id_dest;
-    int id_texture;
-    int id_sourceSubRect; //FIXME
-    int id_rotation;
-    int id_xScale;
-    int id_yScale;
+    int id_dest = 0;
+    int id_texture = 0;
+    int id_sourceSubRect = 0; //FIXME
+    int id_rotation = 0;
+    int id_xScale = 0;
+    int id_yScale = 0;
 
     static QSGMaterialType type;
 };
