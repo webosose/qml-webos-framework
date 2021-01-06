@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018 LG Electronics, Inc.
+// Copyright (c) 2014-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -107,7 +107,7 @@ static void signal_handler(int signum, siginfo_t *info, void *ptr)
 
     // Just write something so that the socket notifier
     // gets triggered
-    char a = 1;
+    int8_t a = 1;
     ::write(sigtermFd[0], &a, sizeof(a));
 }
 
@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
     QStringList allArgs = QCoreApplication::arguments();
     for (int i = 0; i < allArgs.size(); i++) {
         const QString arg = allArgs.at(i);
-        if (arg.startsWith('{')) {
+        if (arg.startsWith(QChar('{'))) {
             QJsonObject obj = QJsonDocument::fromJson(arg.toUtf8()).object();
             if (obj.contains("main"))
                 mainQml = obj.value("main").toString();

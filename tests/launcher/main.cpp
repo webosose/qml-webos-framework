@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018 LG Electronics, Inc.
+// Copyright (c) 2014-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ QStringList validateEnvironment(const QStringList &environment)
 {
     QMap<QString, QString> envmap;
     foreach (const QString &env, environment) {
-        int i = env.indexOf('=');
+        int i = env.indexOf(QChar('='));
         if (i == -1) {
             qWarning("Invalid environment variable: %s", env.toUtf8().data());
             continue;
@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
     QStringList arglist;
     //AppId and main qml can be passed in a json object.
     // {\"appId\":\"com.webos.app.quicksettings\",\"main\":\"file:///usr/palm/applications/com.webos.app.quicksettings/main.qml\"}
-    if(QString(argv[1]).startsWith('{')) {
+    if(QString(argv[1]).startsWith(QChar('{'))) {
        arglist << argv[1];
     }
     else {
