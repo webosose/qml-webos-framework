@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2020 LG Electronics, Inc.
+// Copyright (c) 2014-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@
 #define WP_WINDOWTYPE QStringLiteral("_WEBOS_WINDOW_TYPE")
 #define WP_APPID QStringLiteral("appId")
 #define WP_DISPLAYAFFINITY QStringLiteral("displayAffinity")
+#define WP_PARAMS QStringLiteral("params")
 
 #include "eosregion.h"
 
@@ -67,6 +68,7 @@ class WebOSQuickWindow : public QQuickWindow, public QQmlParserStatus
     Q_PROPERTY(WebOSQuickWindow::KeyMasks keyMask READ keyMask WRITE setKeyMask)
     Q_PROPERTY(bool cursorVisible READ cursorVisible NOTIFY cursorVisibleChanged)
     Q_PROPERTY(QString addon READ addon WRITE setAddon NOTIFY addonChanged)
+    Q_PROPERTY(QString launchParams READ launchParams WRITE setLaunchParams NOTIFY launchParamsChanged)
     Q_INTERFACES(QQmlParserStatus)
 
 public:
@@ -168,6 +170,9 @@ public:
 
     Q_INVOKABLE void resetAddon();
 
+    QString launchParams() { return m_windowProperties.value(WP_PARAMS).toString(); }
+    void setLaunchParams(const QString& launchParams);
+
 public slots:
     void setCursorVisible(const bool cursorVisible);
     QPoint mousePosition() const;
@@ -189,6 +194,7 @@ Q_SIGNALS:
     void cursorVisibleChanged();
     void addonChanged();
     void addonStatusChanged(AddonStatus status);
+    void launchParamsChanged();
 
 protected:
     bool eventFilter(QObject *obj, QEvent *event);

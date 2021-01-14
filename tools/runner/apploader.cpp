@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018 LG Electronics, Inc.
+// Copyright (c) 2014-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,6 +21,9 @@
 #include <QtQuick/qquickview.h>
 
 #include <QtCore/QCoreApplication>
+#include <QtCore/QJsonDocument>
+#include <QtCore/QJsonObject>
+#include <QtCore/QJsonValue>
 
 #include "apploader.h"
 
@@ -48,6 +51,20 @@ bool AppLoader::ready() const
     return m_component->status() == QQmlComponent::Ready;
 }
 
+void AppLoader::setLaunchParams(const QVariant &params)
+{
+    if (m_window && !m_window->handle()) {
+        qWarning("Window is invalid, setLaunchParams failed");
+        return;
+    }
+
+    QJsonValue paramsJson = QJsonValue::fromVariant(params);
+    if (!paramsJson.isNull() && !paramsJson.isUndefined()) {
+        QJsonDocument doc(paramsJson.toObject());
+        if (!doc.isNull() && !doc.isEmpty())
+            m_window->setProperty("launchParams", doc.toJson(QJsonDocument::Compact));
+    }
+}
 
 void AppLoader::terminate()
 {
@@ -67,6 +84,8 @@ void AppLoader::reloadApplication(const QVariant &params)
     }
 
     m_engine.rootContext()->setContextProperty("params", params);
+
+    setLaunchParams(params);
 
     // NOTE
     // Logically, the compositor determines client's wl_webos_shell@state, and the client follows it.
@@ -119,6 +138,7 @@ bool AppLoader::loadApplication(const QString &appId, const QString &mainQml, co
     m_window = qobject_cast<QQuickWindow *>(m_topLevelComponent.data());
     if (!m_window.isNull()) {
         m_engine.setIncubationController(m_window->incubationController());
+        setLaunchParams(params);
     } else {
         QQuickItem *contentItem = qobject_cast<QQuickItem *>(m_topLevelComponent.data());
         if (contentItem) {
@@ -128,6 +148,7 @@ bool AppLoader::loadApplication(const QString &appId, const QString &mainQml, co
             qxView->setResizeMode(QQuickView::SizeRootObjectToView);
             qxView->setContent(mainQml, m_component.data(), contentItem);
         }
+        setLaunchParams(params);
         m_window->show();
     }
 
