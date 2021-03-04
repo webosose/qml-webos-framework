@@ -1,4 +1,4 @@
-// Copyright (c) 2018 LG Electronics, Inc.
+// Copyright (c) 2018-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -46,7 +46,9 @@ void EosVirtualKeyboardOverlay::setTargetItem(QQuickItem* targetTextElement)
 
 void EosVirtualKeyboardOverlay::updateBoundingRectOnScene()
 {
-    const QRect& alignedRectOnScene = mapRectToScene(boundingRect()).toAlignedRect();
+    QRect alignedRectOnScene = mapRectToScene(boundingRect()).toAlignedRect();
+    const qreal pixelRatio = m_activeWindow->devicePixelRatio();
+    alignedRectOnScene.setRect(alignedRectOnScene.x() * pixelRatio, alignedRectOnScene.y() * pixelRatio, alignedRectOnScene.width() * pixelRatio, alignedRectOnScene.height() * pixelRatio);
     if (m_targetTextElement && m_boundingRectOnScene != alignedRectOnScene) {
         m_boundingRectOnScene = alignedRectOnScene;
         WebOSPlatform::instance()->inputPanelLocator()->setInputPanelRect(
