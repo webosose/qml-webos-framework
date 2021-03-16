@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2018 LG Electronics, Inc.
+// Copyright (c) 2013-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -64,14 +64,14 @@ GalleryPage {
 
             Button {
                 id: button4
-                iconSource: "../images/icon_home.png"
+                iconSource: Qt.resolvedUrl("../images/icon_home.png")
                 KeyNavigation.right: button5
                 onClicked: resultText.showResult(this)
             }
 
             Button {
                 id: button5
-                iconSource: "../images/icon_home.png"
+                iconSource: Qt.resolvedUrl("../images/icon_home.png")
                 text: "Icon"
                 enabled: false
                 KeyNavigation.right: smallButton1
@@ -117,7 +117,7 @@ GalleryPage {
 
             Button {
                 id: smallButton4
-                iconSource: "../images/icon_home.png"
+                iconSource: Qt.resolvedUrl("../images/icon_home.png")
                 style: SmallButtonStyle {}
 
                 KeyNavigation.right: smallButton5
@@ -126,7 +126,7 @@ GalleryPage {
 
             Button {
                 id: smallButton5
-                iconSource: "../images/icon_home.png"
+                iconSource: Qt.resolvedUrl("../images/icon_home.png")
                 text: "Icon"
                 style: SmallButtonStyle {}
 

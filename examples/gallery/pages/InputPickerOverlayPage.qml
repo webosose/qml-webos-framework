@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2018 LG Electronics, Inc.
+// Copyright (c) 2013-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,12 +24,14 @@ GalleryPage {
 
     id: root
 
+    property url imageRoot: Qt.resolvedUrl("../images") + "/";
+
     Image {
         id: bgImage
         anchors { top: parent.top; right: parent.right; margins: -10 }
         width: System.Screen.width
         height: System.Screen.height
-        source: "../images/big-buck-bunny.jpg"
+        source: imageRoot + "big-buck-bunny.jpg"
     }
 
     Rectangle {
@@ -57,7 +59,7 @@ GalleryPage {
 
             Button {
                 id: button1
-                iconSource: checked ? "../images/icon_settings.png" : "../images/icon_close.png"
+                iconSource: checked ? imageRoot + "icon_settings.png" : imageRoot + "icon_close.png"
                 checkable: true
                 style: QuickSettingsButtonStyle{ buttonBackgroundColor: "#4d4d4d" }
                 focus: true
@@ -77,26 +79,26 @@ GalleryPage {
                 height: root.height - button1.height - groupHeader.height - 200
 
                 model: ListModel {
-                    ListElement { name: "Live TV"; icon: "../images/icon_livetv.png"}
-                    ListElement { name: "HDMI 1"; icon: "../images/icon_device.png"}
-                    ListElement { name: "Playstation 4"; icon: "../images/icon_device.png"}
-                    ListElement { name: "BD Player"; icon: "../images/icon_device.png"}
-                    ListElement { name: "Chromecast"; icon: "../images/icon_device.png"}
-                    ListElement { name: "HDMI 2"; icon: "../images/icon_device.png"}
-                    ListElement { name: "HDMI 3"; icon: "../images/icon_device.png"}
-                    ListElement { name: "Xbox"; icon: "../images/icon_device.png"}
-                    ListElement { name: "Direct TV (San Francisco)"; icon: "../images/icon_device.png"}
-                    ListElement { name: "Component"; icon: "../images/icon_component.png"}
-                    ListElement { name: "USBdevicename1"; icon: "../images/icon_usb.png"}
-                    ListElement { name: "USBdevicename2"; icon: "../images/icon_usb.png"}
-                    ListElement { name: "USBdevicename3"; icon: "../images/icon_usb.png"}
-                    ListElement { name: "Input Hub"; icon: "../images/icon_advanced.png"}
+                    ListElement { name: "Live TV"; icon: "icon_livetv.png"}
+                    ListElement { name: "HDMI 1"; icon: "icon_device.png"}
+                    ListElement { name: "Playstation 4"; icon: "icon_device.png"}
+                    ListElement { name: "BD Player"; icon: "icon_device.png"}
+                    ListElement { name: "Chromecast"; icon: "icon_device.png"}
+                    ListElement { name: "HDMI 2"; icon: "icon_device.png"}
+                    ListElement { name: "HDMI 3"; icon: "icon_device.png"}
+                    ListElement { name: "Xbox"; icon: "icon_device.png"}
+                    ListElement { name: "Direct TV (San Francisco)"; icon: "icon_device.png"}
+                    ListElement { name: "Component"; icon: "icon_component.png"}
+                    ListElement { name: "USBdevicename1"; icon: "icon_usb.png"}
+                    ListElement { name: "USBdevicename2"; icon: "icon_usb.png"}
+                    ListElement { name: "USBdevicename3"; icon: "icon_usb.png"}
+                    ListElement { name: "Input Hub"; icon: "icon_advanced.png"}
                 }
 
                 delegate: Button {
                     id: button
 
-                    iconSource: icon
+                    iconSource: imageRoot + icon
                     style: QuickSettingsButtonStyle{ buttonBackgroundColor: "transparent" }
 
                     Behavior on x {

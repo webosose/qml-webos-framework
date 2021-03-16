@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2018 LG Electronics, Inc.
+// Copyright (c) 2013-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ GalleryPage {
 
             Button {
                 id: button1
-                iconSource: checked ? "../images/icon_settings.png" : "../images/icon_close.png"
+                iconSource: checked ? Qt.resolvedUrl("../images/icon_settings.png") : Qt.resolvedUrl("../images/icon_close.png")
                 focus: true
                 checkable: true
                 style: QuickSettingsButtonStyle{ buttonBackgroundColor: "#4d4d4d" }
@@ -77,7 +77,7 @@ GalleryPage {
             }
             Button {
                 id: button2
-                iconSource: "../images/icon_picture.png"
+                iconSource: Qt.resolvedUrl("../images/icon_picture.png")
                 style: QuickSettingsButtonStyle{ buttonBackgroundColor: "#459fec" }
                 contextualPopup: QuickSettingsContextualPopup {
                     QuickSettingsDotPicker {
@@ -106,7 +106,7 @@ GalleryPage {
             }
             Button {
                 id: button3
-                iconSource: "../images/icon_sound.png"
+                iconSource: Qt.resolvedUrl("../images/icon_sound.png")
                 style: QuickSettingsButtonStyle{ buttonBackgroundColor: "#f55c5e" }
                 contextualPopup: QuickSettingsContextualPopup {
                     QuickSettingsDotPicker {
@@ -135,7 +135,7 @@ GalleryPage {
             }
             Button {
                 id: button4
-                iconSource: "../images/icon_aspect_ratio.png"
+                iconSource: Qt.resolvedUrl("../images/icon_aspect_ratio.png")
                 style: QuickSettingsButtonStyle{ buttonBackgroundColor: "#e7ad10"}
                 contextualPopup: QuickSettingsContextualPopup {
                     QuickSettingsDotPicker {
@@ -164,7 +164,7 @@ GalleryPage {
             }
             Button {
                 id: button5
-                iconSource: "../images/icon_sleep.png"
+                iconSource: Qt.resolvedUrl("../images/icon_sleep.png")
                 style: QuickSettingsButtonStyle{ buttonBackgroundColor: "#73b905" }
                 contextualPopup: QuickSettingsContextualPopup {
                     QuickSettingsDotPicker {
@@ -191,7 +191,7 @@ GalleryPage {
             }
             Button {
                 id: button6
-                iconSource: "../images/icon_secure.png"
+                iconSource: Qt.resolvedUrl("../images/icon_secure.png")
                 style: QuickSettingsButtonStyle{ buttonBackgroundColor: "#9266cc" }
                 contextualPopup: QuickSettingsContextualPopup {
                     QuickSettingsDotPicker {
@@ -216,7 +216,7 @@ GalleryPage {
             }
             Button {
                 id: button7
-                iconSource: "../images/icon_advanced.png"
+                iconSource: Qt.resolvedUrl("../images/icon_advanced.png")
                 style: QuickSettingsButtonStyle{ buttonBackgroundColor: "#4d4d4d" }
                 onClicked: {
                     buttonColumn.state = "closed"

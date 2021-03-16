@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2018 LG Electronics, Inc.
+// Copyright (c) 2013-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ import "../"
 GalleryPage {
 
     id: root
+
+    property url imageRoot: Qt.resolvedUrl("../images") + "/";
 
     anchors.fill: parent
 
@@ -65,12 +67,12 @@ GalleryPage {
                 visible: false
 
                 model: ListModel {
-                    ListElement { name: "Live TV"; icon: "../images/icon_livetv.png"; placement: "In Launcher"}
-                    ListElement { name: "HDMI1"; icon: "../images/icon_device.png"; placement: "Not in Launcher" }
-                    ListElement { name: "HDMI2"; icon: "../images/icon_device.png"; placement: "Not in Launcher" }
-                    ListElement { name: "HDMI3"; icon: "../images/icon_device.png"; placement: "Not in Launcher" }
-                    ListElement { name: "Component"; icon: "../images/icon_component.png"; placement: "Not in Launcher" }
-                    ListElement { name: "AV"; icon: "../images/icon_component.png"; placement: "Not in Launcher" }
+                    ListElement { name: "Live TV"; icon: "icon_livetv.png"; placement: "In Launcher"}
+                    ListElement { name: "HDMI1"; icon: "icon_device.png"; placement: "Not in Launcher" }
+                    ListElement { name: "HDMI2"; icon: "icon_device.png"; placement: "Not in Launcher" }
+                    ListElement { name: "HDMI3"; icon: "icon_device.png"; placement: "Not in Launcher" }
+                    ListElement { name: "Component"; icon: "icon_component.png"; placement: "Not in Launcher" }
+                    ListElement { name: "AV"; icon: "icon_component.png"; placement: "Not in Launcher" }
                 }
 
                 section.delegate: Component {
@@ -84,7 +86,7 @@ GalleryPage {
                 delegate: Component {
                     ListItem {
                         text: name
-                        iconSource: Qt.resolvedUrl(icon)
+                        iconSource: imageRoot + icon
                     }
                 }
 
@@ -104,7 +106,7 @@ GalleryPage {
 
                 Button {
                     id: closeButton
-                    iconSource: "../images/icon_close.png"
+                    iconSource: Qt.resolvedUrl("../images/icon_close.png")
                     style: QuickSettingsButtonStyle{ buttonBackgroundColor: "#4d4d4d" }
                     anchors.right: parent.right
                     anchors.top: parent.top
