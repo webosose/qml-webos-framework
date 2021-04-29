@@ -37,4 +37,5 @@ Spinner 0.1 Spinner.qml
 DefaultSpinner 0.1 DefaultSpinner.qml
 ScrollDecorator 0.1 ScrollDecorator.qml
 TextScroller 0.1 TextScroller.qml
+ElideShader 0.1 ElideShader.qml
 SkullCloseButton 0.1 SkullCloseButton/SkullCloseButton.qml
