@@ -91,7 +91,7 @@ GalleryPage {
                             ListElement { name: "Photo" }
                         }
                     }
-                    Keys.onPressed: if (event.key === Qt.Key_Down || event.key === Qt.Key_Up) state = "closed"
+                    Keys.onPressed: (event) => { if (event.key === Qt.Key_Down || event.key === Qt.Key_Up) state = "closed"; }
                     onOpenedChanged: if (opened) buttonColumn.closePopupsWithoutFocus();
                 }
                 onClicked: resultText.showResult(this)
@@ -120,7 +120,7 @@ GalleryPage {
                             ListElement { name: "Game" }
                         }
                     }
-                    Keys.onPressed: if (event.key === Qt.Key_Down || event.key === Qt.Key_Up) state = "closed"
+                    Keys.onPressed: (event) => { if (event.key === Qt.Key_Down || event.key === Qt.Key_Up) state = "closed"; }
                     onOpenedChanged: if (opened) buttonColumn.closePopupsWithoutFocus();
                 }
                 onClicked: resultText.showResult(this)
@@ -149,7 +149,7 @@ GalleryPage {
                             ListElement { name: "Cinema Zoom" }
                         }
                     }
-                    Keys.onPressed: if (event.key === Qt.Key_Down || event.key === Qt.Key_Up) state = "closed"
+                    Keys.onPressed: (event) => { if (event.key === Qt.Key_Down || event.key === Qt.Key_Up) state = "closed"; }
                     onOpenedChanged: if (opened) buttonColumn.closePopupsWithoutFocus();
                 }
                 onClicked: resultText.showResult(this)
@@ -176,7 +176,7 @@ GalleryPage {
                             ListElement { name: "30mins" }
                         }
                     }
-                    Keys.onPressed: if (event.key === Qt.Key_Down || event.key === Qt.Key_Up) state = "closed"
+                    Keys.onPressed: (event) => { if (event.key === Qt.Key_Down || event.key === Qt.Key_Up) state = "closed"; }
                     onOpenedChanged: if (opened) buttonColumn.closePopupsWithoutFocus();
                 }
                 onClicked: resultText.showResult(this)
@@ -201,7 +201,7 @@ GalleryPage {
                             ListElement { name: "Off" }
                         }
                     }
-                    Keys.onPressed: if (event.key === Qt.Key_Down || event.key === Qt.Key_Up) state = "closed"
+                    Keys.onPressed: (event) => { if (event.key === Qt.Key_Down || event.key === Qt.Key_Up) state = "closed"; }
                     onOpenedChanged: if (opened) buttonColumn.closePopupsWithoutFocus();
                 }
                 onClicked: resultText.showResult(this)

@@ -133,11 +133,12 @@ GalleryPage {
                         anchors.bottom: parent.bottom
                         hoverEnabled: true
                         onContainsMouseChanged: parent.focus = true
-                        onClicked: clickAnimation.running = true
+                        onClicked: (mouse) => { clickAnimation.running = true; }
                     }
 
-                    Keys.onPressed: if (event.key == Qt.Key_Enter || event.key == Qt.Key_Return) {
-                         clickAnimation.running = true
+                    Keys.onPressed: (event) => {
+                        if (event.key == Qt.Key_Enter || event.key == Qt.Key_Return)
+                            clickAnimation.running = true;
                     }
 
                     onFocusChanged: x = focus && !list.flicking ? -20 : 0

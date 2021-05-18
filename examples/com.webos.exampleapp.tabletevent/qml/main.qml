@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2020 LG Electronics, Inc.
+// Copyright (c) 2018-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -177,19 +177,19 @@ WebOSWindow {
 
         MouseArea {
             anchors.fill: parent
-            onClicked: {
-                parent.count += 1
-                mouseAreaClickStatus.text = 'clicked ' + parent.count + ' times'
+            onClicked: (mouse) => {
+                parent.count += 1;
+                mouseAreaClickStatus.text = 'clicked ' + parent.count + ' times';
             }
-            onPressed: {
-                mouseAreaStatus.text = 'pressed'
+            onPressed: (mouse) => {
+                mouseAreaStatus.text = 'pressed';
             }
-            onReleased: {
-                mouseAreaStatus.text = 'released'
+            onReleased: (mouse) => {
+                mouseAreaStatus.text = 'released';
             }
-            onPressAndHold: {
-                mouseAreaStatus.text = 'pressAndHold'
-                mouseAreaClickStatus.text = ''
+            onPressAndHold: (mouse) => {
+                mouseAreaStatus.text = 'pressAndHold';
+                mouseAreaClickStatus.text = '';
             }
             onMouseXChanged: {
                 mouseAreaX.text = "X:" + mouseX;
@@ -238,15 +238,15 @@ WebOSWindow {
 
         MultiPointTouchArea {
             anchors.fill: parent
-            onTouchUpdated: {
-                parent.count += 1
-                touchUpdateStatus.text = 'touchUpdated ' + parent.count + ' times'
+            onTouchUpdated: (touchPoints) => {
+                parent.count += 1;
+                touchUpdateStatus.text = 'touchUpdated ' + parent.count + ' times';
             }
-            onPressed: {
-                touchStatus.text = 'pressed'
+            onPressed: (touchPoints) => {
+                touchStatus.text = 'pressed';
             }
-            onReleased: {
-                touchStatus.text = 'released'
+            onReleased: (touchPoints) => {
+                touchStatus.text = 'released';
             }
         }
     }

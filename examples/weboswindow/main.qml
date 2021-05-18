@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2019 LG Electronics, Inc.
+// Copyright (c) 2014-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -108,7 +108,7 @@ WebOSWindow {
 
         MouseArea {
             anchors.fill: parent
-            onClicked: view.close();
+            onClicked: (mouse) => { view.close(); }
         }
     }
 
@@ -117,7 +117,7 @@ WebOSWindow {
      * Well behaving client should do some quick clean up here and then call
      * WebOSWindow::close()
      */
-    onWindowCloseRequested: {
+    onWindowCloseRequested: (event) => {
         console.log("Window was requested to be closed");
         event.accepted = false;
         view.close();

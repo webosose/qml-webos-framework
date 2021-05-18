@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2018 LG Electronics, Inc.
+// Copyright (c) 2015-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -409,7 +409,7 @@ ListView {
             d.scrollToPrevIndex(event);
     }
 
-    Keys.onLeftPressed: {
+    Keys.onLeftPressed: (event) => {
         if (scrolling && ribbon.state === "autoscrolling-right") {
             stopScrollingByKey(event);
             return;
@@ -432,7 +432,7 @@ ListView {
             d.scrollToNextIndex(event);
     }
 
-    Keys.onRightPressed: {
+    Keys.onRightPressed: (event) => {
         if (scrolling && ribbon.state === "autoscrolling-left") {
             stopScrollingByKey(event);
             return;
@@ -440,7 +440,7 @@ ListView {
         rightKeyPressed(event);
     }
 
-    Keys.onReleased: {
+    Keys.onReleased: (event) => {
         switch (event.key) {
         case Qt.Key_Left:
         case Qt.Key_Right:

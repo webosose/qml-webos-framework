@@ -53,7 +53,7 @@ MouseArea {
         property int originalCacheBuffer: -1
     }
 
-    onPressAndHold: {
+    onPressAndHold: (mouse) => {
         if (ribbon === null) {
             console.warn("No ListView set, not starting drag");
             return;
@@ -78,7 +78,7 @@ MouseArea {
         ribbon.startEditing();
     }
 
-    onReleased: {
+    onReleased: (mouse) => {
         if (ribbon === null || drag.target === null) {
             return;
         }

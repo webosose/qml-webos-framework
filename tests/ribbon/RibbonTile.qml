@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2018 LG Electronics, Inc.
+// Copyright (c) 2015-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -52,10 +52,10 @@ FocusScope {
         angle: geometry.angle
         enabled: true
         hoverEnabled: true
-        onClicked: { root.activated(); }
-        onPressAndHold: { root.selected(); }
+        onClicked: (mouse) => { root.activated(); }
+        onPressAndHold: (mouse) => { root.selected(); }
         onEntered: { root.forceActiveFocus(); }
-        onReleased: { root.deselected(); }
+        onReleased: (mouse) => { root.deselected(); }
     }
 
     Text {

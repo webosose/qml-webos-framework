@@ -1,4 +1,4 @@
-// Copyright (c) 2013-2018 LG Electronics, Inc.
+// Copyright (c) 2013-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -70,21 +70,21 @@ FocusScope {
 
     onExclusiveGroupChanged: exclusiveGroup.bindCheckable(root)
 
-    Keys.onPressed: {
+    Keys.onPressed: (event) => {
         if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
-            root.down = true
-            root.pressed()
+            root.down = true;
+            root.pressed();
         }
     }
-    Keys.onReleased: {
+    Keys.onReleased: (event) => {
         if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
-            if (root.checked == false) root.checked = true
-            else if (root.checked == true && root.exclusiveGroup == null) root.checked = false
+            if (root.checked == false) root.checked = true;
+            else if (root.checked == true && root.exclusiveGroup == null) root.checked = false;
 
-            root.toggled(root.checked, root)
-            root.down = false
-            root.released()
-            root.clicked()
+            root.toggled(root.checked, root);
+            root.down = false;
+            root.released();
+            root.clicked();
         }
     }
 
@@ -158,20 +158,20 @@ FocusScope {
         hoverEnabled: true
 
 //        onClicked: root.clicked() //We call clicked twice!!! (second time onReleased) - it is incorrect
-        onPressed: {
-            root.down = true
-            root.pressed()
+        onPressed: (mouse) => {
+            root.down = true;
+            root.pressed();
         }
-        onReleased: {
-            if (root.checked == false) root.checked = true
-            else if (root.checked == true && root.exclusiveGroup == null) root.checked = false
+        onReleased: (mouse) => {
+            if (root.checked == false) root.checked = true;
+            else if (root.checked == true && root.exclusiveGroup == null) root.checked = false;
 
-            root.down = false
-            root.toggled(root.checked, root)
-            root.released()
-            root.clicked()
+            root.down = false;
+            root.toggled(root.checked, root);
+            root.released();
+            root.clicked();
         }
-        onPressAndHold: root.pressAndHold()
+        onPressAndHold: (mouse) => { root.pressAndHold(); }
         onEntered: root.forceActiveFocus()
     }
 }

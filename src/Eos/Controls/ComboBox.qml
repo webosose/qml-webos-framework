@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2018 LG Electronics, Inc.
+// Copyright (c) 2015-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -212,10 +212,10 @@ FocusScope {
                 anchors.fill: parent
                 hoverEnabled: true;
                 onEntered: header.forceActiveFocus();
-                onClicked: root.state = (root.state == "folded") ? "expanded" : "folded";
+                onClicked: (mouse) => { root.state = (root.state == "folded") ? "expanded" : "folded"; }
             }
 
-            Keys.onReleased: {
+            Keys.onReleased: (event) => {
                 switch (event.key) {
                 case Qt.Key_Enter:
                 case Qt.Key_Return:
@@ -226,7 +226,7 @@ FocusScope {
                 }
             }
 
-            Keys.onDownPressed: {
+            Keys.onDownPressed: (event) => {
                 if (root.state === "expanded") {
                     comboList.currentIndex = 0;
                     comboList.currentItem.forceActiveFocus();
@@ -250,7 +250,7 @@ FocusScope {
             }
         }
 
-        Keys.onDownPressed: {
+        Keys.onDownPressed: (event) => {
             if (root.state === "folded") {
                 event.accepted = false;
                 return;
@@ -263,7 +263,7 @@ FocusScope {
             }
         }
 
-        Keys.onUpPressed: {
+        Keys.onUpPressed: (event) => {
             if (root.state === "folded") {
                 event.accepted = false;
                 return;
@@ -275,14 +275,15 @@ FocusScope {
             }
         }
 
-        Keys.onLeftPressed: {
+        Keys.onLeftPressed: (event) => {
             if (root.state === "expanded") {
                 return;
             }
             event.accepted = false;
             reset();
         }
-        Keys.onRightPressed: {
+
+        Keys.onRightPressed: (event) => {
             if (root.state === "expanded") {
                 return;
             }
@@ -374,7 +375,7 @@ FocusScope {
                 anchors.fill: parent
                 hoverEnabled: true
 
-                onClicked: {
+                onClicked: (mouse) => {
                     if (root.state === "expanded") {
                         root.selectedIndex = index;
                         root.state = "folded";
@@ -393,7 +394,7 @@ FocusScope {
                 }
             }
 
-            Keys.onReleased: {
+            Keys.onReleased: (event) => {
                 switch (event.key) {
                 case Qt.Key_Enter:
                 case Qt.Key_Return:

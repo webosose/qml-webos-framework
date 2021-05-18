@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2018 LG Electronics, Inc.
+// Copyright (c) 2015-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -112,8 +112,8 @@ ListView {
         // gets should be placed when the editing stops
         property Item owner: Item {}
 
-        onPressAndHold: {
-            ribbon.pointerMode = true
+        onPressAndHold: (mouse) => {
+            ribbon.pointerMode = true;
 
             if (ribbon.allowEditing) {
                 currentItem.state = "editing";
@@ -127,9 +127,9 @@ ListView {
             }
         }
 
-        onPositionChanged: {
-            ribbon.pointerMode = true
-            ribbon.highlightRangeMode = ListView.NoHighlightRange
+        onPositionChanged: (mouse) => {
+            ribbon.pointerMode = true;
+            ribbon.highlightRangeMode = ListView.NoHighlightRange;
 
             if (ribbon.state === "editing") {
                 var direction = mouse.x > prevMouseX ? 1 : -1;
@@ -158,7 +158,7 @@ ListView {
             prevMouseX = mouse.x;
         }
 
-        onReleased: {
+        onReleased: (mouse) => {
             if (currentItem.state === "editing") {
                 currentItem.contentItem.parent = owner;
                 currentItem.contentItem.x = 0;
@@ -168,7 +168,7 @@ ListView {
             }
         }
 
-        onWheel: wheelScroll(wheel.angleDelta.y)
+        onWheel: (wheel) => { wheelScroll(wheel.angleDelta.y); }
 
     }
 
@@ -274,7 +274,7 @@ ListView {
         }
     }
 
-    Keys.onUpPressed: {
+    Keys.onUpPressed: (event) => {
         if (currentIndex == -1 || !ribbon.allowEditing) {
             return;
         }
@@ -284,7 +284,7 @@ ListView {
         currentItem.state = "editing";
     }
 
-    Keys.onDownPressed: {
+    Keys.onDownPressed: (event) => {
         if (ribbon.state !== "editing") {
             return;
         }
@@ -294,13 +294,14 @@ ListView {
         currentItem.state = "current";
     }
 
-    Keys.onLeftPressed: {
+    Keys.onLeftPressed: (event) => {
         ribbon.scrollInput = "keys"
         ribbon.disablePointer();
         scrollInputResetTimer.restart()
         ribbon.stepLeft();
     }
-    Keys.onRightPressed: {
+
+    Keys.onRightPressed: (event) => {
         ribbon.scrollInput = "keys"
         ribbon.disablePointer();
         scrollInputResetTimer.restart()
@@ -313,6 +314,7 @@ ListView {
         scrollDetectionTimer.restart()
         d.previousContentX = contentX
     }
+
     onScrollingChanged: {
         if (!scrolling) scrollInput = "none"
     }

@@ -258,23 +258,23 @@ MouseArea {
         visible: root.active && !root.drag.active
         z: d.ribbon.z + 1
 
-        onPositionChanged: {
+        onPositionChanged: (mouse) => {
             if (root.selectOnHover) {
                 d.selectIndexUnderMouse(mouse);
             }
         }
 
-        onClicked: {
+        onClicked: (mouse) => {
             stopEdit();
         }
     }
 
-    onReleased: {
+    onReleased: (mouse) => {
         if (!root.active && d.ribbon)
             d.ribbon.editableAreaMouseReleased(mouse);
     }
 
-    onPositionChanged: {
+    onPositionChanged: (mouse) => {
         if (root.active)
             d.selectIndexUnderMouse(mouse);
         else if (d.ribbon)

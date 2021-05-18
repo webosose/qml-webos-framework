@@ -193,11 +193,11 @@ FocusScope {
         contextualPopup.parent = contextualPopupContainer
     }
 
-    onClicked: {
+    onClicked: (mouse) => {
         if (contextualPopup) {
-            contextualPopup.parent = contextualPopupContainer
-            contextualPopup.state = (contextualPopup.state == "opened") ? "closed" : "opened"
-            contextualPopup.focus = contextualPopup.state == "opened"
+            contextualPopup.parent = contextualPopupContainer;
+            contextualPopup.state = (contextualPopup.state == "opened") ? "closed" : "opened";
+            contextualPopup.focus = contextualPopup.state == "opened";
         }
     }
 
@@ -229,22 +229,22 @@ FocusScope {
         anchors.fill: parent
     }
 
-    Keys.onPressed: {
+    Keys.onPressed: (event) => {
         if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
             if (!root.checkable) {
-                root.pressed = true
+                root.pressed = true;
             }
         }
     }
-    Keys.onReleased: {
+    Keys.onReleased: (event) => {
         if (event.key === Qt.Key_Enter || event.key === Qt.Key_Return) {
             if (root.checkable) {
-                root.checked = !root.checked
-                root.toggled(root.checked)
+                root.checked = !root.checked;
+                root.toggled(root.checked);
             } else {
-                root.pressed = false
+                root.pressed = false;
             }
-            root.clicked(null)
+            root.clicked(null);
         }
     }
 
@@ -375,21 +375,21 @@ FocusScope {
         enabled: root.enabled
         hoverEnabled: true
 
-        onClicked: root.clicked(mouse);
-        onPressed: {
+        onClicked: (mouse) => { root.clicked(mouse); }
+        onPressed: (mouse) => {
             if (!root.checkable) {
-                root.pressed = true
+                root.pressed = true;
             }
         }
-        onReleased: {
+        onReleased: (mouse) => {
             if (root.checkable) {
-                root.checked = !root.checked
-                root.toggled(root.checked)
+                root.checked = !root.checked;
+                root.toggled(root.checked);
             } else {
-                root.pressed = false
+                root.pressed = false;
             }
         }
-        onPressAndHold: root.pressAndHold(mouse);
+        onPressAndHold: (mouse) => { root.pressAndHold(mouse); }
         onEntered: {
             if (!cursorHidden) { //See cursorHidden description
                 root.forceActiveFocus()

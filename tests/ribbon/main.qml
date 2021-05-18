@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2018 LG Electronics, Inc.
+// Copyright (c) 2015-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ Window {
 
         editTransform: Translate { x: Style.launchPoint.geometry.tan * 20; y: -20 }
 
-        onMoved: {
+        onMoved: (from, to) => {
             console.log("MOVE from:", from , "to:", to);
         }
 
@@ -76,14 +76,14 @@ Window {
 
             model: m
 
-            Keys.onLeftPressed: {
+            Keys.onLeftPressed: (event) => {
                 if (!event.accepted) {
                     event.accepted = true;
                     //headerItem.cardZero.forceActiveFocus();
                 }
             }
 
-            Keys.onRightPressed: {
+            Keys.onRightPressed: (event) => {
                 if (!event.accepted) {
                     event.accepted = true;
                     footerItem.forceActiveFocus();
@@ -104,8 +104,8 @@ Window {
                     font.pixelSize: 32
                 }
 
-                Keys.onUpPressed: launcher_ribbon.startEditing();
-                Keys.onDownPressed: launcher_ribbon.endEditing();
+                Keys.onUpPressed: (event) => { launcher_ribbon.startEditing(); }
+                Keys.onDownPressed: (event) => { launcher_ribbon.endEditing(); }
 
                 onActiveFocusChanged: {
                     if (activeFocus)
@@ -155,7 +155,7 @@ Window {
                      label.text: qsTr("Channels")
 
                      KeyNavigation.left: card_zero
-                     Keys.onLeftPressed: {}
+                     Keys.onLeftPressed: (event) => {}
                      onActivated: {
                          console.log("goto-channels");
                      }
@@ -172,7 +172,7 @@ Window {
                      label.text: qsTr("Card Zero")
 
                      KeyNavigation.left: nav_button
-                     Keys.onRightPressed: {
+                     Keys.onRightPressed: (event) => {
                          launcher_ribbon.currentIndex = 0;
                          launcher_ribbon.currentItem.forceActiveFocus();
                      }
@@ -196,7 +196,7 @@ Window {
                     geometry: Style.navigationButton.geometry
                     background.color: Style.navigationButton.color
                     label.text: qsTr("Edit")
-                    Keys.onLeftPressed: {
+                    Keys.onLeftPressed: (event) => {
                         launcher_ribbon.currentIndex = launcher_ribbon.count - 1;
                         launcher_ribbon.currentItem.forceActiveFocus();
                     }
@@ -237,7 +237,7 @@ Window {
             anchors.fill: parent
             enabled: !launcher_ribbon.autoScrolling
             acceptedButtons: MouseArea.NoButton
-            onWheel: {
+            onWheel: (wheel) => {
                 launcher_ribbon.scrollBy(-wheel.angleDelta.y / 120);
             }
         }
