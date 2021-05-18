@@ -105,10 +105,13 @@ void VideoCapture::terminate()
         return;
 
     if (currentTextureId != 0 && glIsTexture(currentTextureId)) {
+        GLuint textureId = 0;
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-        GLuint textureId = currentTexture->nativeInterface<QNativeInterface::QSGOpenGLTexture>()->nativeTexture();
+        if (currentTexture)
+            textureId = currentTexture->nativeInterface<QNativeInterface::QSGOpenGLTexture>()->nativeTexture();
 #else
-        GLuint textureId = currentTexture->textureId();
+        if (currentTexture)
+            textureId = currentTexture->textureId();
 #endif
         if ((currentTexture && currentTextureId != textureId) || currentTexture == NULL) {
             VT_DeleteTexture(context_id, currentTextureId);
@@ -117,10 +120,13 @@ void VideoCapture::terminate()
     }
 
     if (nextTextureId != 0 && glIsTexture(nextTextureId)) {
+        GLuint textureId = 0;
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-        GLuint textureId = currentTexture->nativeInterface<QNativeInterface::QSGOpenGLTexture>()->nativeTexture();
+        if (currentTexture)
+            textureId = currentTexture->nativeInterface<QNativeInterface::QSGOpenGLTexture>()->nativeTexture();
 #else
-        GLuint textureId = currentTexture->textureId();
+        if (currentTexture)
+            textureId = currentTexture->textureId();
 #endif
         if ((currentTexture && nextTextureId != textureId) || currentTexture == NULL) {
             VT_DeleteTexture(context_id, nextTextureId);
@@ -128,15 +134,17 @@ void VideoCapture::terminate()
         nextTextureId = 0;
     }
 
+    if (currentTexture) {
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         GLuint textureId = currentTexture->nativeInterface<QNativeInterface::QSGOpenGLTexture>()->nativeTexture();
 #else
         GLuint textureId = currentTexture->textureId();
 #endif
-    if (currentTexture && textureId != 0 && glIsTexture(textureId)) {
-        VT_DeleteTexture(context_id, textureId);
-        if (currentTexture) {
-            currentTexture = NULL;
+        if (textureId != 0 && glIsTexture(textureId)) {
+            VT_DeleteTexture(context_id, textureId);
+            if (currentTexture) {
+                currentTexture = NULL;
+            }
         }
     }
 
@@ -192,10 +200,13 @@ void VideoCapture::acquireVideoTexture()
 
     if (m_isVTAvailable) {
         if (m_initialized) {
+            GLuint textureId = 0;
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-            GLuint textureId = currentTexture->nativeInterface<QNativeInterface::QSGOpenGLTexture>()->nativeTexture();
+            if (currentTexture)
+                textureId = currentTexture->nativeInterface<QNativeInterface::QSGOpenGLTexture>()->nativeTexture();
 #else
-            GLuint textureId = currentTexture->textureId();
+            if (currentTexture)
+                textureId = currentTexture->textureId();
 #endif
             if (nextTextureId != 0 && glIsTexture(nextTextureId) && ((currentTexture && nextTextureId != textureId) || currentTexture == NULL)) {
                 VT_DeleteTexture(context_id, nextTextureId);
@@ -240,8 +251,11 @@ QSGNode * VideoCapture::updatePaintNode(QSGNode * oldNode, UpdatePaintNodeData *
         rectNode = dynamic_cast<QSGSimpleRectNode *>(oldNode);
     }
 
+    GLuint textureId = 0;
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-    GLuint textureId = currentTexture->nativeInterface<QNativeInterface::QSGOpenGLTexture>()->nativeTexture();
+    if (currentTexture)
+        textureId = currentTexture->nativeInterface<QNativeInterface::QSGOpenGLTexture>()->nativeTexture();
+
     if (nextTextureId != 0 && glIsTexture(nextTextureId) && ((currentTexture && nextTextureId != textureId) || currentTexture == NULL)) {
         currentTexture = currentTexture->nativeInterface<QNativeInterface::QSGOpenGLTexture>()->fromNative(nextTextureId, window(), boundingRect().size().toSize());
     } else if (currentTextureId != 0 && glIsTexture(currentTextureId) && ((currentTexture && currentTextureId != textureId) || currentTexture == NULL)) {
@@ -249,7 +263,9 @@ QSGNode * VideoCapture::updatePaintNode(QSGNode * oldNode, UpdatePaintNodeData *
         currentTexture = currentTexture->nativeInterface<QNativeInterface::QSGOpenGLTexture>()->fromNative(currentTextureId, window(), boundingRect().size().toSize());
     }
 #else
-    GLuint textureId = currentTexture->textureId();
+    if (currentTexture)
+        textureId = currentTexture->textureId();
+
     if (nextTextureId != 0 && glIsTexture(nextTextureId) && ((currentTexture && nextTextureId != textureId) || currentTexture == NULL)) {
         currentTexture = window()->createTextureFromId(nextTextureId, boundingRect().size().toSize());
     } else if (currentTextureId != 0 && glIsTexture(currentTextureId) && ((currentTexture && currentTextureId != textureId) || currentTexture == NULL)) {
