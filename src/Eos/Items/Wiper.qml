@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018 LG Electronics, Inc.
+// Copyright (c) 2014-2021 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -75,13 +75,15 @@ Item {
         objectName: parent.objectName+"-beziergon"
 
         visible: transitioning || forceBeziergon
-        sourceItem: (transitioning || forceBeziergon) ? (root.sourceItem || null) : null
+        sourceItem: ShaderEffectSource {
+            sourceItem: (transitioning || forceBeziergon) ? (root.sourceItem || null) : null
+        }
 
-        dest: sourceItem && sourceItem.fillMode === Image.Pad ?
-                     Qt.rect((width - sourceItem.sourceSize.width) / 2.0,
-                     (height - sourceItem.sourceSize.height) / 2.0,
-                      sourceItem.sourceSize.width,
-                      sourceItem.sourceSize.height) :
+        dest: root.sourceItem && root.sourceItem.fillMode === Image.Pad ?
+                     Qt.rect((width - root.sourceItem.sourceSize.width) / 2.0,
+                     (height - root.sourceItem.sourceSize.height) / 2.0,
+                      root.sourceItem.sourceSize.width,
+                      root.sourceItem.sourceSize.height) :
                       Qt.rect(0, 0, width, height)
         resolution: Qt.point(0,20)
         antialiasing: false
