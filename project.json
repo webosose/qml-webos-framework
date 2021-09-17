@@ -1,0 +1,22 @@
+{
+    "name": "qml-webos-framework",
+    "id": "qml-webos-framework",
+    "projectType": "webos-qml",
+    "sourceLocale": "en-US",
+    "resourceDirs": {
+        "ts":"resources"
+    },
+    "resourceFileTypes": {
+        "ts":"ilib-loctool-webos-ts-resource"
+    },
+    "plugins": [
+        "ilib-loctool-webos-qml"
+    ],
+    "excludes": [
+        ".*",
+        "*"
+    ],
+    "includes": [
+        "examples/com.webos.exampleapp.qmllocalization"
+    ]
+}

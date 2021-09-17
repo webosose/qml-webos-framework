@@ -1,4 +1,4 @@
-# Copyright (c) 2012-2021 LG Electronics, Inc.
+# Copyright (c) 2021 LG Electronics, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,17 +15,4 @@
 # SPDX-License-Identifier: Apache-2.0
 
 TEMPLATE = subdirs
-
-MOC_DIR = .moc
-OBJECTS_DIR = .obj
-
-CONFIG += qt debug
-
-SUBDIRS = \
-    bare-eos \
-    com.webos.exampleapp.canvastablet \
-    com.webos.exampleapp.tabletevent \
-    com.webos.exampleapp.qmllocalization \
-    gallery \
-    overlay-window \
-    vkb-overlay
+SUBDIRS = app extraLocalization

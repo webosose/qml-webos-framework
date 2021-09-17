@@ -1,4 +1,4 @@
-# Copyright (c) 2012-2021 LG Electronics, Inc.
+# Copyright (c) 2021 LG Electronics, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,18 +14,14 @@
 #
 # SPDX-License-Identifier: Apache-2.0
 
-TEMPLATE = subdirs
+TEMPLATE = aux
 
-MOC_DIR = .moc
-OBJECTS_DIR = .obj
+!load(webos-variables):error("Cannot load webos-variables.prf")
 
-CONFIG += qt debug
-
-SUBDIRS = \
-    bare-eos \
-    com.webos.exampleapp.canvastablet \
-    com.webos.exampleapp.tabletevent \
-    com.webos.exampleapp.qmllocalization \
-    gallery \
-    overlay-window \
-    vkb-overlay
+defined(WEBOS_INSTALL_WEBOS_APPLICATIONSDIR, var) {
+    CONFIG += lrelease
+    EXTRA_TRANSLATIONS = qml-webos-framework_en.ts
+    QM_FILES_INSTALL_PATH = $$WEBOS_INSTALL_DATADIR/qml/locales/qml-webos-framework/resources_0
+    # QTBUG-77398
+    versionAtMost(QT_VERSION, 5.14.1): qm_files.CONFIG = no_check_exist
+}
