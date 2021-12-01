@@ -14,7 +14,7 @@
   "portraitResize": {},
   "visible": true,
   "requiredPermissions": [
-    "system",
-    "settings.read"
+    "boot.query",
+    "settings.query"
   ]
 }
