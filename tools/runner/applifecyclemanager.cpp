@@ -23,7 +23,7 @@
 #include "applifecyclemanager.h"
 
 const QLatin1String AppLifeCycleManager::serviceName = QLatin1String("com.webos.applicationManager");
-const QLatin1String AppLifeCycleManager::defaultInterfaceMethodName = QLatin1String("registerNativeApp");
+const QLatin1String AppLifeCycleManager::defaultInterfaceMethodName = QLatin1String("registerApp");
 
 AppLifeCycleManager::AppLifeCycleManager(const QString appId, const QString method, const QString params)
     : m_bus(NULL)
