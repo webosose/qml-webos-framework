@@ -113,7 +113,7 @@ void AppLifeCycleManager::handleAppLifeCycle(QString &contextId, QString &data, 
     Q_UNUSED(contextId);
 
     QJsonObject response = QJsonDocument::fromJson(data.toUtf8()).object();
-    const char* keyName = (method == defaultInterfaceMethodName) ? "message" : "event";
+    const char* keyName = (method == defaultInterfaceMethodName) ? "event" : "message";
     QString message = response.value(keyName).toString();
 
     qDebug() << "handleAppLifeCycle()" << message << "event response: " << response;
