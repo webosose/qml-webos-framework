@@ -122,6 +122,8 @@ bool AppLoader::loadApplication(const QString &appId, const QString &mainQml, co
         qputenv("APP_ID", appId.toUtf8());
     }
 
+    if (!m_component)
+        return false;
     m_component->loadUrl(mainQml);
     if ( !m_component->isReady() ) {
         qWarning("%s", qPrintable(m_component->errorString()));

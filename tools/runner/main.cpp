@@ -233,6 +233,8 @@ int main(int argc, char *argv[])
         }
     } else {
         client = new IpcClient();
+        if (!client)
+            return -1;
         QObject::connect(client.data(), &IpcClient::launchRequest,
                          [&loader, client] (const QString &appId,
                                             const QString &mainQml,

@@ -297,6 +297,8 @@ SampledMaterial* Beziergon::createSampledMaterial() {
     // if the dest rect is bigger than the screen, we can safely use the faster shader.
     // TODO another optimization is if all control points lie within the dest rect, but
     // it is more complex to update all the time, as we usually animate these.
+    if (!window())
+        return NULL;
     if (m_dest.contains(QRectF(QPoint(0,0), window()->size())) || m_clampToEdge)
         return new SimpleSampledBeziergonMaterial();
     else
