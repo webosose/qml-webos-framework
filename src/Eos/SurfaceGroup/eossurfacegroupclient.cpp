@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2018 LG Electronics, Inc.
+// Copyright (c) 2015-2023 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ EosSurfaceGroupClient::EosSurfaceGroupClient(QObject *parent)
     : QObject (parent)
     , m_webOSWindow (0)
     , m_SurfaceGroup (0)
+    , m_attached(false)
 {
 
 }
@@ -54,23 +55,31 @@ void EosSurfaceGroupClient::componentComplete()
 
 void EosSurfaceGroupClient::handleWindowVisibility()
 {
-    if (m_SurfaceGroup) {
+    if (!m_webOSWindow) {
         return;
     }
 
-    if (m_webOSWindow && m_webOSWindow->isVisible()) {
+    if (m_webOSWindow->isVisible()) {
+        // attach surface
         WebOSSurfaceGroupCompositor* compositor = WebOSPlatform::instance()->surfaceGroupCompositor();
         if (compositor) {
             if (!m_groupName.isEmpty()) {
                 m_SurfaceGroup = compositor->getGroup(m_groupName);
-                if (m_SurfaceGroup) {
+                if (m_SurfaceGroup && !m_attached) {
                     if (m_layerName.isEmpty()) {
                         m_SurfaceGroup->attachAnonymousSurface(m_webOSWindow);
                     } else {
                         m_SurfaceGroup->attachSurface(m_webOSWindow, m_layerName);
                     }
+                    m_attached = true;
                 }
             }
+        }
+    } else {
+        // detach surface
+        if (m_attached) {
+            m_SurfaceGroup->detachSurface(m_webOSWindow);
+            m_attached = false;
         }
     }
 }

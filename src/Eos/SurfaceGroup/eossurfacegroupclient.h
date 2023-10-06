@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2018 LG Electronics, Inc.
+// Copyright (c) 2015-2023 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -65,6 +65,8 @@ protected:
     QString m_layerName;
 
     WebOSSurfaceGroup* m_SurfaceGroup;
+
+    bool m_attached;
 };
 
 #endif // EOS_SURFACE_GROUP_CLIENT_H
