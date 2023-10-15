@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2019 LG Electronics, Inc.
+// Copyright (c) 2014-2023 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "parallelogram.h"
+#include "securecoding.h"
 
 #include <QtQuick/qsgnode.h>
 #include <QDebug>
@@ -169,12 +170,12 @@ QSGGeometry* Parallelogram::generateFringeGeometry(QSGGeometry* old) {
     for(int y=0; y < yVertices-1; y++) {
         for(int x=0; x < xVertices-1; x++) {
             if(x == 1 && y == 1) continue; // skip middle square
-            index[iindex++] = y * xVertices + x;
-            index[iindex++] = y * xVertices + (x+1);
-            index[iindex++] = (y+1) * xVertices + x;
-            index[iindex++] = (y+1) * xVertices + x;
-            index[iindex++] = (y+1)* xVertices + (x+1);
-            index[iindex++] = y * xVertices + (x+1);
+            index[iindex++] = int2ushort(y * xVertices + x);
+            index[iindex++] = int2ushort(y * xVertices + (x+1));
+            index[iindex++] = int2ushort((y+1) * xVertices + x);
+            index[iindex++] = int2ushort((y+1) * xVertices + x);
+            index[iindex++] = int2ushort((y+1)* xVertices + (x+1));
+            index[iindex++] = int2ushort(y * xVertices + (x+1));
         }
     }
 

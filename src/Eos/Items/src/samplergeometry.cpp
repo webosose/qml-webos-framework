@@ -236,7 +236,7 @@ void Item::updateSampledMaterial(GeometryNode* node) {
             mat->m_rotation = (GLint)(m_sourceItem->rotation() >= 0 ?
                               (int)m_sourceItem->rotation() % 360 :
                               (int)m_sourceItem->rotation() % 360 + 360);
-            QSize sourceSize = mat->textureProvider()->texture() ?
+            QSize sourceSize = (mat->textureProvider() && mat->textureProvider()->texture()) ?
                                mat->textureProvider()->texture()->textureSize() : QSize();
             if (!sourceSize.isEmpty() && m_dest.width() > 0 && m_dest.height() > 0 ) {
                 sourceSize *= m_sourceItem->scale();

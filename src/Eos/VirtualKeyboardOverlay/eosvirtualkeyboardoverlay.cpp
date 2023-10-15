@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2021 LG Electronics, Inc.
+// Copyright (c) 2018-2023 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "eosvirtualkeyboardoverlay.h"
+#include "securecoding.h"
 
 #include <QQuickWindow>
 
@@ -53,7 +54,7 @@ void EosVirtualKeyboardOverlay::updateBoundingRectOnScene()
         m_boundingRectOnScene = alignedRectOnScene;
         WebOSPlatform::instance()->inputPanelLocator()->setInputPanelRect(
             m_targetTextElement, m_boundingRectOnScene.x(), m_boundingRectOnScene.y(),
-            m_boundingRectOnScene.width(), m_boundingRectOnScene.height());
+            int2uint(m_boundingRectOnScene.width()), int2uint(m_boundingRectOnScene.height()));
     }
 }
 

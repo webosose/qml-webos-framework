@@ -33,6 +33,8 @@ isEmpty(TARGET_MACHINE) {
     DEFINES += NO_WINDOW_TRANSPARENCY
 }
 
+INCLUDEPATH += ../../include
+
 SOURCES += webosquickwindow.cpp
 HEADERS += webosquickwindow.h
 

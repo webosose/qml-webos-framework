@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2021 LG Electronics, Inc.
+// Copyright (c) 2014-2023 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "webosquickwindow.h"
+#include "securecoding.h"
 
 #include <QGuiApplication>
 #include <QDebug>
@@ -364,7 +365,7 @@ WebOSQuickWindow::LocationHints WebOSQuickWindow::locationHint()
 #ifndef NO_WEBOS_PLATFORM
     WebOSShellSurface *ss = shellSurface();
     if (ss)
-        return (WebOSQuickWindow::LocationHints)((int)ss->locationHint());
+        return (WebOSQuickWindow::LocationHints)(uint2int(ss->locationHint()));
     return (WebOSQuickWindow::LocationHints) WebOSQuickWindow::LocationHintCenter;
 #else
     return WebOSQuickWindow::LocationHintCenter;
@@ -376,7 +377,7 @@ void WebOSQuickWindow::setLocationHint(WebOSQuickWindow::LocationHints hint)
 #ifndef NO_WEBOS_PLATFORM
     WebOSShellSurface *ss = shellSurface();
     if (ss && isVisible()) {
-        ss->setLocationHint((WebOSShellSurface::LocationHints)(int)hint);
+        ss->setLocationHint((WebOSShellSurface::LocationHints)(uint2int(hint)));
     } else {
         qDebug() << "Window not ready, deferring hint" << hint;
         m_pendingLocationHint = hint;
@@ -405,7 +406,7 @@ void WebOSQuickWindow::updatePendingWindowProperties()
 
             // Make sure that the location hint get also propagated
             if (m_pendingLocationHint > 0) {
-                ss->setLocationHint((WebOSShellSurface::LocationHints)(int)m_pendingLocationHint);
+                ss->setLocationHint((WebOSShellSurface::LocationHints)(uint2int(m_pendingLocationHint)));
             }
 
             if (!m_pendingAddon.isEmpty()) {
@@ -455,7 +456,7 @@ void WebOSQuickWindow::setKeyMask(const WebOSQuickWindow::KeyMasks& keyMask)
 #ifndef NO_WEBOS_PLATFORM
     WebOSShellSurface *ss = shellSurface();
     if (ss) {
-        ss->setKeyMask((WebOSShellSurface::KeyMasks)(int)m_keyMask);
+        ss->setKeyMask((WebOSShellSurface::KeyMasks)(uint2int(m_keyMask)));
     }
 #endif
 }

@@ -23,6 +23,8 @@ TARGET = $$qtLibraryTarget($$TARGET)
 uri = Eos.Items
 include($$PWD/../shader.pri)
 
+INCLUDEPATH += ../../../include
+
 SOURCES += $$files(src/*.cpp)
 HEADERS += $$files(src/*.h)
 versionAtLeast(QT_VERSION, 6.0.0) {

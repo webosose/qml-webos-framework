@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2021 LG Electronics, Inc.
+// Copyright (c) 2014-2023 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 #include "beziergon.h"
+#include "securecoding.h"
 
 #include <QtQuick/qsgnode.h>
 #include <QQuickWindow>
@@ -328,11 +329,11 @@ QSGGeometry* Beziergon::generateBodyGeometry(QSGGeometry* old) {
      */
 
     // at least two vertices in each direction
-    int xVertices = 2 + m_resolution.x();
-    int yVertices = 2 + m_resolution.y();
-    int vertexCount = xVertices * yVertices;
-    int numTriangles = (xVertices - 1) * (yVertices - 1) * 2;
-    int indexCount = numTriangles * 3;
+    int xVertices = checkIntMax(2 + checkIntMax(m_resolution.x()));
+    int yVertices = checkIntMax(2 + checkIntMax(m_resolution.y()));
+    int vertexCount = checkIntMax(xVertices * yVertices);
+    int numTriangles = checkIntMax(checkIntMax((checkIntMin(xVertices - 1)) * (checkIntMin(yVertices - 1))) * 2);
+    int indexCount = checkIntMax(numTriangles * 3);
 
     if(!geometry) {
         geometry = new QSGGeometry(meshAttributes(), vertexCount, indexCount);
@@ -370,10 +371,9 @@ QSGGeometry* Beziergon::generateBodyGeometry(QSGGeometry* old) {
             if (y < yVertices - 1 && x < xVertices - 1) {
                 index[iindex++] =  y      * xVertices + x;
                 index[iindex++] =  y      * xVertices + x + 1;
-                index[iindex++] = (y + 1) * xVertices + x;
-
-                index[iindex++] = (y + 1) * xVertices + x;
-                index[iindex++] = (y + 1) * xVertices + x + 1;
+                index[iindex++] = int2ushort((y + 1) * xVertices + x);
+                index[iindex++] = int2ushort((y + 1) * xVertices + x);
+                index[iindex++] = int2ushort((y + 1) * xVertices + x + 1);
                 index[iindex++] =  y      * xVertices + x + 1;
             }
         }
@@ -402,12 +402,12 @@ QSGGeometry* Beziergon::generateFringeGeometry(QSGGeometry* old) {
      *    9--11-13-15
      */
 
-    int vertexCount = 2 * (6 + 2 * m_resolution.x())
-                    + 2 * (6 + 2 * m_resolution.y());
+    int vertexCount = checkIntMax(checkIntMax(2 * (checkIntMax(6 + checkIntMax(2 * m_resolution.x()))))
+                    + checkIntMax(checkIntMax(2 * (checkIntMax(6 + checkIntMax(2 * m_resolution.y()))))));
 
-    int numTriangles = 2 * (6 + 2 * m_resolution.x())
-                     + 2 * (2 + 2 * m_resolution.y());
-    int indexCount = numTriangles * 3;
+    int numTriangles = checkIntMax(checkIntMax(2 * (checkIntMax(6 + checkIntMax(2 * m_resolution.x()))))
+                     + checkIntMax(checkIntMax(2 * (checkIntMax(2 + checkIntMax(2 * m_resolution.y()))))));
+    int indexCount = checkIntMax(numTriangles * 3);
     if(!geometry) {
         geometry = new QSGGeometry(meshAttributes(), vertexCount, indexCount);
         geometry->setDrawingMode(GL_TRIANGLES);
@@ -433,7 +433,7 @@ QSGGeometry* Beziergon::generateFringeGeometry(QSGGeometry* old) {
         vy = y;
         float alpha0 = y == 0 ? 0.0f : 1.0f;
         float alpha1 = 1.0f - alpha0;
-        
+
         // 0--2-
         // |  |  the left end of the strip
         // 1--3-
@@ -456,12 +456,12 @@ QSGGeometry* Beziergon::generateFringeGeometry(QSGGeometry* old) {
         vertex[vindex++].set(vx, vy,  1.0f,  1.0f, 0.0f);
         int base = y * 2 * (m_resolution.x() + 4);
         for(int x = 0; x < m_resolution.x() + 3; x++) {
-            index[iindex++] = base + (x*2);
-            index[iindex++] = base + (x*2)+2;
-            index[iindex++] = base + (x*2)+1;
-            index[iindex++] = base + (x*2)+1;
-            index[iindex++] = base + (x*2)+2;
-            index[iindex++] = base + (x*2)+3;
+            index[iindex++] = int2ushort(checkIntMax(base + (x*2)));
+            index[iindex++] = int2ushort(checkIntMax(checkIntMax(base + checkIntMax(x*2))+2));
+            index[iindex++] = int2ushort(checkIntMax(checkIntMax(base + checkIntMax(x*2))+1));
+            index[iindex++] = int2ushort(checkIntMax(checkIntMax(base + checkIntMax(x*2))+1));
+            index[iindex++] = int2ushort(checkIntMax(checkIntMax(base + checkIntMax(x*2))+2));
+            index[iindex++] = int2ushort(checkIntMax(checkIntMax(base + checkIntMax(x*2))+3));
         }
 
     }
@@ -488,12 +488,12 @@ QSGGeometry* Beziergon::generateFringeGeometry(QSGGeometry* old) {
         int base = 4 * (m_resolution.x() + 4)
                  + x * (4 + m_resolution.y() * 2);
         for(int y = 0; y < m_resolution.y() + 1; y++) {
-            index[iindex++] = base + (y*2);
-            index[iindex++] = base + (y*2)+2;
-            index[iindex++] = base + (y*2)+1;
-            index[iindex++] = base + (y*2)+1;
-            index[iindex++] = base + (y*2)+2;
-            index[iindex++] = base + (y*2)+3;
+            index[iindex++] = int2ushort(checkIntMax(base + checkIntMax(y*2)));
+            index[iindex++] = int2ushort(checkIntMax(checkIntMax(base + checkIntMax(y*2))+2));
+            index[iindex++] = int2ushort(checkIntMax(checkIntMax(base + checkIntMax(y*2))+1));
+            index[iindex++] = int2ushort(checkIntMax(checkIntMax(base + checkIntMax(y*2))+1));
+            index[iindex++] = int2ushort(checkIntMax(checkIntMax(base + checkIntMax(y*2))+2));
+            index[iindex++] = int2ushort(checkIntMax(checkIntMax(base + checkIntMax(y*2))+3));
         }
     }
 

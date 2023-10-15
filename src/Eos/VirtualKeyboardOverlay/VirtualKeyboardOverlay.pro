@@ -23,6 +23,8 @@ TARGET = eosvirtualkeyboardoverlay
 
 include(../../common/common.pri)
 
+INCLUDEPATH += ../../../include
+
 uri = Eos.VirtualKeyboardOverlay
 
 FRAMEWORK_VERSION_MAJOR = 0

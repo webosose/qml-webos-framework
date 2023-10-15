@@ -83,7 +83,6 @@ static void pmlogMessageHandler(QtMsgType type, const QMessageLogContext &contex
 }
 #endif
 
-
 void benchmark_message_handler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     if (!g_default_handler)
@@ -290,8 +289,11 @@ int main(int argc, char *argv[])
     memset(&action, 0, sizeof(struct sigaction));
     action.sa_sigaction = signal_handler;
     action.sa_flags = SA_SIGINFO;
-    sigaction(SIGTERM, &action, NULL);
-    sigaction(SIGINT, &action, NULL);
+    if(sigaction(SIGTERM, &action, NULL) == -1)
+        qWarning() << "sigaction error with SIGTERM";
+
+    if(sigaction(SIGINT, &action, NULL) == -1)
+        qWarning() << "sigaction error with SIGINT";
 
     int ret = app.exec();
 
