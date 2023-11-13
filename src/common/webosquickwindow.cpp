@@ -450,13 +450,20 @@ void WebOSQuickWindow::setInputRegion(EosRegion* pRegion)
     }
 }
 
+static WebOSShellSurface::KeyMasks toShellSurfaceKeyMasks(WebOSQuickWindow::KeyMasks keymask)
+{
+    static_assert(sizeof(keymask) <= sizeof(uint32_t), "Fail to cast KeyMasks to uint32_t");
+    static_assert(WebOSQuickWindow::KeyMask::KeyMaskDefault <= UINT_MAX, "Fail to pass KeyMaskDefault <= UINT_MAX");
+    return static_cast<WebOSShellSurface::KeyMasks>(static_cast<uint32_t>(keymask));
+}
+
 void WebOSQuickWindow::setKeyMask(const WebOSQuickWindow::KeyMasks& keyMask)
 {
     m_keyMask = keyMask;
 #ifndef NO_WEBOS_PLATFORM
     WebOSShellSurface *ss = shellSurface();
     if (ss) {
-        ss->setKeyMask((WebOSShellSurface::KeyMasks)(uint2int(m_keyMask)));
+        ss->setKeyMask(toShellSurfaceKeyMasks(m_keyMask));
     }
 #endif
 }
