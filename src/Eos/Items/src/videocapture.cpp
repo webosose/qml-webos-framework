@@ -290,11 +290,12 @@ QSGNode * VideoCapture::updatePaintNode(QSGNode * oldNode, UpdatePaintNodeData *
         rectNode->markDirty(QSGNode::DirtyMaterial);
         qWarning() << "[QML Video Capture Plugin]" << " " << "Use PunchThrough";
 
+        if (static_cast<QSGNode*>(rectNode) != static_cast<QSGNode*>(simpleTextureNode))
+            retSGNode = rectNode;
+
         if (simpleTextureNode) {
             delete simpleTextureNode;
         }
-
-        retSGNode = rectNode;
     } else {
         oldTexture = simpleTextureNode->texture();
         if (oldTexture != currentTexture) {
@@ -314,11 +315,12 @@ QSGNode * VideoCapture::updatePaintNode(QSGNode * oldNode, UpdatePaintNodeData *
             }
         }
 
+        if (static_cast<QSGNode*>(rectNode) != static_cast<QSGNode*>(simpleTextureNode))
+            retSGNode = simpleTextureNode;
+
         if (rectNode) {
             delete rectNode;
         }
-
-        retSGNode = simpleTextureNode;
     }
 
     // recordPaintEnd();
