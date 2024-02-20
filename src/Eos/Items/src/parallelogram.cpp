@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2023 LG Electronics, Inc.
+// Copyright (c) 2014-2024 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -99,11 +99,11 @@ QSGGeometry* Parallelogram::generateBodyGeometry(QSGGeometry* old) {
     }
 
     //second row: top, inner AA border
-    vertex[vindex++].set(0       + m_offset + xOff, 0.0f + yOff, 1.0f); // x-X-------x-x
-    vertex[vindex++].set(width()            - xOff, 0.0f + yOff, 1.0f); // x-x-------X-x
+    vertex[vindex++].set(0.0f    + m_offset + xOff, 0.0f + yOff, 1.0f); // x-X-------x-x
+    vertex[vindex++].set(0.0f    + width()  - xOff, 0.0f + yOff, 1.0f); // x-x-------X-x
     //third row: bottom, inner AA border
-    vertex[vindex++].set(0                  + xOff, height() - yOff, 1.0f); // x-X-------x-x
-    vertex[vindex++].set(width() - m_offset - xOff, height() - yOff, 1.0f); // x-x-------X-x
+    vertex[vindex++].set(0.0f                         + xOff, 0.0f + height() - yOff, 1.0f); // x-X-------x-x
+    vertex[vindex++].set(0.0f    + width() - m_offset - xOff, 0.0f + height() - yOff, 1.0f); // x-x-------X-x
     Q_ASSERT(vindex == vertexCount);
 
     int iindex = 0;
@@ -144,25 +144,25 @@ QSGGeometry* Parallelogram::generateFringeGeometry(QSGGeometry* old) {
     float yOff2 = 0.49f;
 
     //first row: top, outer AA border
-    vertex[vindex++].set(0       + m_offset - xOff, 0.0f - yOff2, 0.0f); // X-x-------x-x
-    vertex[vindex++].set(0       + m_offset + xOff, 0.0f - yOff2, 0.0f); // x-X-------x-x
-    vertex[vindex++].set(width()            - xOff, 0.0f - yOff2, 0.0f); // x-x-------X-x
-    vertex[vindex++].set(width()            + xOff, 0.0f - yOff2, 0.0f); // x-x-------x-X
+    vertex[vindex++].set(0.0f    + m_offset - xOff, 0.0f - yOff2, 0.0f); // X-x-------x-x
+    vertex[vindex++].set(0.0f    + m_offset + xOff, 0.0f - yOff2, 0.0f); // x-X-------x-x
+    vertex[vindex++].set(0.0f    + width()  - xOff, 0.0f - yOff2, 0.0f); // x-x-------X-x
+    vertex[vindex++].set(0.0f    + width()  + xOff, 0.0f - yOff2, 0.0f); // x-x-------x-X
     //second row: top, inner AA border
-    vertex[vindex++].set(0       + m_offset - xOff, 0.0f + yOff, 0.0f); // X-x-------x-x
-    vertex[vindex++].set(0       + m_offset + xOff, 0.0f + yOff, 1.0f); // x-X-------x-x
-    vertex[vindex++].set(width()            - xOff, 0.0f + yOff, 1.0f); // x-x-------X-x
-    vertex[vindex++].set(width()            + xOff, 0.0f + yOff, 0.0f); // x-x-------x-X
+    vertex[vindex++].set(0.0f    + m_offset - xOff, 0.0f + yOff, 0.0f); // X-x-------x-x
+    vertex[vindex++].set(0.0f    + m_offset + xOff, 0.0f + yOff, 1.0f); // x-X-------x-x
+    vertex[vindex++].set(0.0f    + width()  - xOff, 0.0f + yOff, 1.0f); // x-x-------X-x
+    vertex[vindex++].set(0.0f    + width()  + xOff, 0.0f + yOff, 0.0f); // x-x-------x-X
     //third row: bottom, inner AA border
-    vertex[vindex++].set(0                  - xOff, height() - yOff, 0.0f); // X-x-------x-x
-    vertex[vindex++].set(0                  + xOff, height() - yOff, 1.0f); // x-X-------x-x
-    vertex[vindex++].set(width() - m_offset - xOff, height() - yOff, 1.0f); // x-x-------X-x
-    vertex[vindex++].set(width() - m_offset + xOff, height() - yOff, 0.0f); // x-x-------x-X
+    vertex[vindex++].set(0.0f                          - xOff, 0.0f + height() - yOff, 0.0f); // X-x-------x-x
+    vertex[vindex++].set(0.0f                          + xOff, 0.0f + height() - yOff, 1.0f); // x-X-------x-x
+    vertex[vindex++].set(0.0f    + width()  - m_offset - xOff, 0.0f + height() - yOff, 1.0f); // x-x-------X-x
+    vertex[vindex++].set(0.0f    + width()  - m_offset + xOff, 0.0f + height() - yOff, 0.0f); // x-x-------x-X
     //fourth row: bottom, outer AA border
-    vertex[vindex++].set(0                  - xOff, height() + yOff2, 0.0f); // X-x-------x-x
-    vertex[vindex++].set(0                  + xOff, height() + yOff2, 0.0f); // x-X-------x-x
-    vertex[vindex++].set(width() - m_offset - xOff, height() + yOff2, 0.0f); // x-x-------X-x
-    vertex[vindex++].set(width() - m_offset + xOff, height() + yOff2, 0.0f); // x-x-------x-X
+    vertex[vindex++].set(0.0f                          - xOff, 0.0f + height() + yOff2, 0.0f); // X-x-------x-x
+    vertex[vindex++].set(0.0f                          + xOff, 0.0f + height() + yOff2, 0.0f); // x-X-------x-x
+    vertex[vindex++].set(0.0f    + width() - m_offset  - xOff, 0.0f + height() + yOff2, 0.0f); // x-x-------X-x
+    vertex[vindex++].set(0.0f    + width() - m_offset  + xOff, 0.0f + height() + yOff2, 0.0f); // x-x-------x-X
     Q_ASSERT(vindex == vertexCount);
 
     int iindex = 0;

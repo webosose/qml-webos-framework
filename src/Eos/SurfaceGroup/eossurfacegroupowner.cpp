@@ -1,4 +1,4 @@
-// Copyright (c) 2015-2021 LG Electronics, Inc.
+// Copyright (c) 2015-2024 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@
 EosSurfaceGroupOwner::EosSurfaceGroupOwner(QObject *parent)
     : QObject (parent)
     , m_webOSWindow (0)
-    , m_SurfaceGroup (0)
     , m_allowAnonymous(false)
+    , m_SurfaceGroup (0)
 {
 
 }
