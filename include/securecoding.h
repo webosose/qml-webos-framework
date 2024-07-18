@@ -1,4 +1,4 @@
-// Copyright (c) 2023 LG Electronics, Inc.
+// Copyright (c) 2023-2024 LG Electronics, Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -58,9 +58,25 @@ static uint16_t int2ushort(int32_t val)
     return static_cast<uint16_t>(val);
 }
 
+
+
+static int32_t multiplicationInt(int32_t a, int32_t b) {
+    double castToDoubleA = static_cast<double>(a);
+    double castToDoubleB = static_cast<double>(b);
+    double result = castToDoubleA * castToDoubleB;
+    if (result > static_cast<double>(INT_MAX)) {
+        qWarning() << "The multiplication result exceeds INT_MAX ";
+        return INT_MAX;
+    } else if (result < static_cast<double>(INT_MIN)) {
+        qWarning() << "The multiplication result exceeds INT_MIN ";
+        return INT_MIN;
+    } else
+        return static_cast<int32_t>(result);
+}
+
 static int32_t checkIntUpper(int64_t val)
 {
-    if(val > static_cast<int64_t>(INT_MAX))
+    if (val > static_cast<int64_t>(INT_MAX))
     {
         qWarning() << "The value exceeds INT_MAX. Value: " << val;
         return INT_MAX;

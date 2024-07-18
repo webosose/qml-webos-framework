@@ -329,11 +329,12 @@ QSGGeometry* Beziergon::generateBodyGeometry(QSGGeometry* old) {
      */
 
     // at least two vertices in each direction
-    int xVertices = checkIntMax(2 + checkIntMax(m_resolution.x()));
-    int yVertices = checkIntMax(2 + checkIntMax(m_resolution.y()));
-    int vertexCount = checkIntMax(xVertices * yVertices);
-    int numTriangles = checkIntMax(checkIntMax((checkIntMin(xVertices - 1)) * (checkIntMin(yVertices - 1))) * 2);
-    int indexCount = checkIntMax(numTriangles * 3);
+    int xVertices = checkIntMax(2 + static_cast<int64_t>(m_resolution.x()));
+    int yVertices = checkIntMax(2 + static_cast<int64_t>(m_resolution.y()));
+    int vertexCount = multiplicationInt(xVertices, yVertices);
+    int numTriangles = multiplicationInt(checkIntMin(static_cast<int64_t>(xVertices) - 1), checkIntMin(static_cast<int64_t>(yVertices) - 1));
+    numTriangles = checkIntMax(static_cast<int64_t>(numTriangles) * 2);
+    int indexCount = checkIntMax(static_cast<int64_t>(numTriangles) * 3);
 
     if(!geometry) {
         geometry = new QSGGeometry(meshAttributes(), vertexCount, indexCount);
@@ -402,12 +403,13 @@ QSGGeometry* Beziergon::generateFringeGeometry(QSGGeometry* old) {
      *    9--11-13-15
      */
 
-    int vertexCount = checkIntMax(checkIntMax(2 * (checkIntMax(6 + checkIntMax(2 * m_resolution.x()))))
-                    + checkIntMax(checkIntMax(2 * (checkIntMax(6 + checkIntMax(2 * m_resolution.y()))))));
+    int vertexCount = checkIntMax((2 * (6 + (2 * static_cast<int64_t>(m_resolution.x()))))
+                    + (2 * (6 + (2 * static_cast<int64_t>(m_resolution.y())))));
 
-    int numTriangles = checkIntMax(checkIntMax(2 * (checkIntMax(6 + checkIntMax(2 * m_resolution.x()))))
-                     + checkIntMax(checkIntMax(2 * (checkIntMax(2 + checkIntMax(2 * m_resolution.y()))))));
-    int indexCount = checkIntMax(numTriangles * 3);
+    int numTriangles = checkIntMax((2 * (6 + 2 * static_cast<int64_t>(m_resolution.x())))
+                     + (2 * (2 + 2 * static_cast<int64_t>(m_resolution.y()))));
+
+    int indexCount = checkIntMax(static_cast<int64_t>(numTriangles) * 3);
     if(!geometry) {
         geometry = new QSGGeometry(meshAttributes(), vertexCount, indexCount);
         geometry->setDrawingMode(GL_TRIANGLES);
@@ -454,14 +456,14 @@ QSGGeometry* Beziergon::generateFringeGeometry(QSGGeometry* old) {
         vertex[vindex++].set(vx, vy, -1.0f,  1.0f, alpha1);
         vertex[vindex++].set(vx, vy,  1.0f, -1.0f, 0.0f);
         vertex[vindex++].set(vx, vy,  1.0f,  1.0f, 0.0f);
-        int base = y * 2 * (m_resolution.x() + 4);
+        int64_t base = y * 2 * (m_resolution.x() + 4);
         for(int x = 0; x < m_resolution.x() + 3; x++) {
             index[iindex++] = int2ushort(checkIntMax(base + (x*2)));
-            index[iindex++] = int2ushort(checkIntMax(checkIntMax(base + checkIntMax(x*2))+2));
-            index[iindex++] = int2ushort(checkIntMax(checkIntMax(base + checkIntMax(x*2))+1));
-            index[iindex++] = int2ushort(checkIntMax(checkIntMax(base + checkIntMax(x*2))+1));
-            index[iindex++] = int2ushort(checkIntMax(checkIntMax(base + checkIntMax(x*2))+2));
-            index[iindex++] = int2ushort(checkIntMax(checkIntMax(base + checkIntMax(x*2))+3));
+            index[iindex++] = int2ushort(checkIntMax(base + (x*2)+2));
+            index[iindex++] = int2ushort(checkIntMax(base + (x*2)+1));
+            index[iindex++] = int2ushort(checkIntMax(base + (x*2)+1));
+            index[iindex++] = int2ushort(checkIntMax(base + (x*2)+2));
+            index[iindex++] = int2ushort(checkIntMax(base + (x*2)+3));
         }
 
     }
@@ -485,15 +487,15 @@ QSGGeometry* Beziergon::generateFringeGeometry(QSGGeometry* old) {
         vy = 1.0f;
         vertex[vindex++].set(vx, vy, -1.0f, -1.0f, alpha0);
         vertex[vindex++].set(vx, vy,  1.0f, -1.0f, alpha1);
-        int base = 4 * (m_resolution.x() + 4)
-                 + x * (4 + m_resolution.y() * 2);
+        int64_t base = 4 * (m_resolution.x() + 4)
+                     + x * (4 + m_resolution.y() * 2);
         for(int y = 0; y < m_resolution.y() + 1; y++) {
-            index[iindex++] = int2ushort(checkIntMax(base + checkIntMax(y*2)));
-            index[iindex++] = int2ushort(checkIntMax(checkIntMax(base + checkIntMax(y*2))+2));
-            index[iindex++] = int2ushort(checkIntMax(checkIntMax(base + checkIntMax(y*2))+1));
-            index[iindex++] = int2ushort(checkIntMax(checkIntMax(base + checkIntMax(y*2))+1));
-            index[iindex++] = int2ushort(checkIntMax(checkIntMax(base + checkIntMax(y*2))+2));
-            index[iindex++] = int2ushort(checkIntMax(checkIntMax(base + checkIntMax(y*2))+3));
+            index[iindex++] = int2ushort(checkIntMax(base + (y*2)));
+            index[iindex++] = int2ushort(checkIntMax(base + (y*2)+2));
+            index[iindex++] = int2ushort(checkIntMax(base + (y*2)+1));
+            index[iindex++] = int2ushort(checkIntMax(base + (y*2)+1));
+            index[iindex++] = int2ushort(checkIntMax(base + (y*2)+2));
+            index[iindex++] = int2ushort(checkIntMax(base + (y*2)+3));
         }
     }
 
